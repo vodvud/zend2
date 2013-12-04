@@ -1,0 +1,11 @@
+<?php if(isset($getGallery) && is_array($getGallery)){ ?>
+<ul class="img-gallery clearfix">
+    <?php foreach($getGallery as $item){ ?>
+    <li>
+        <a href="<?php echo($item['url']); ?>" data-lightbox="place-gallery">
+            <img class="gal-img" src="<?php echo($item['small']); ?>" alt="">
+        </a>
+    </li>
+    <?php } ?>
+</ul>
+<?php } ?>

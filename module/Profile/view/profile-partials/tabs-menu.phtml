@@ -1,0 +1,7 @@
+<ul class="tabset">
+    <li<?php echo(($this->routeNames('controller') == 'index' || $this->routeNames('controller')=='add-car' || preg_match('/^vehicles-/', $this->routeNames('controller'))) ? ' class="active"' : ''); ?>><a href="<?php echo($this->easyUrl(array())); ?>"><i class="ico-ads"></i> Управление объявлениями</a></li>
+    <li<?php echo(($this->routeNames('controller') == 'contacts') ? ' class="active"' : ''); ?>><a href="<?php echo($this->easyUrl(array('controller' => 'contacts'))); ?>"><i class="ico-phone"></i> Контактная информация</a></li>
+    <li<?php echo(($this->routeNames('controller') == 'wallet') ? ' class="active"' : ''); ?>><a href="<?php echo($this->easyUrl(array('controller' => 'wallet'))); ?>"><i class="ico-money"></i> Кошелек</a></li>
+    <li<?php echo(($this->routeNames('controller') == 'settings') ? ' class="active"' : ''); ?>><a href="<?php echo($this->easyUrl(array('controller' => 'settings'))); ?>"><i class="ico-profile"></i> Профиль</a></li>
+    <li<?php echo(($this->routeNames('controller') == 'favorites') ? ' class="active"' : ''); ?>><a href="<?php echo($this->easyUrl(array('controller' => 'favorites'))); ?>"><i class="ico-favorites"></i> Избранное</a></li>
+</ul>

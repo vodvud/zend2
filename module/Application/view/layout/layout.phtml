@@ -1,0 +1,62 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <?php             
+            $this->headTitle('SIte Name')
+                 ->setSeparator(' - ')
+                 ->setAutoEscape(false);
+               
+            echo($this->headTitle());
+        ?>
+        <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
+        <!-- styles and js -->
+        <?php 
+           $this->headLink(array(
+                       'rel' => 'shortcut icon', 
+                       'type' => 'image/png', 
+                       'href' => $this->basePath() . '/img/favicon.png'
+                ))
+                ->prependStylesheet($this->basePath() . '/fonts/stylesheet.css')
+                ->prependStylesheet($this->basePath() . '/css/lightbox.css')
+                ->prependStylesheet($this->basePath() . '/css/jcf.css');
+
+            $this->headScript()
+                 ->prependFile($this->basePath() . '/js/default.js')
+                 ->prependFile($this->basePath() . '/js/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+                 ->prependFile($this->basePath() . '/js/jquery.carousel.js')
+                 ->prependFile($this->basePath() . '/js/jquery.main.js') 
+                 ->prependFile($this->basePath() . '/js/libs/jcf.js')
+                 ->prependFile($this->basePath() . '/js/libs/lightbox-2.6.min.js')
+                 ->prependFile($this->basePath() . '/js/libs/modernizr-2.6.2.min.js') 
+                 ->prependFile($this->basePath() . '/js/libs/jquery-1.10.2.min.js');
+            
+            if($this->routeNames('module') == 'profile'){
+                 $this->headLink()
+                      ->appendStylesheet($this->basePath() . '/css/medialoader/application.css');
+                 
+                 $this->headScript()
+                      ->appendFile($this->basePath() . '/js/tinymce/jquery.tinymce.min.js')
+                      ->appendFile($this->basePath() . '/js/libs/bootstrap-formhelpers-phone.js')
+                      ->appendFile($this->basePath() . '/js/medialoader/application.js');
+            }
+
+            $this->mediaLoader();
+            
+            echo($this->headLink()."\n");
+            echo($this->headScript()."\n");
+        ?>
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="wrapper-center">
+                <?php echo($this->partial('application/layout/header')); ?>
+                <div class="container">
+                    <?php echo($this->content); ?>
+                </div>
+        <!-- /container -->
+        <?php echo($this->partial('application/layout/footer')); ?>
+        <?php echo($this->inlineScript()); ?>
+    </body>
+</html>

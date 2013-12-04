@@ -1,0 +1,14 @@
+<?php
+/**
+ * Local Configuration Override
+ *
+ * Copy local.php.dist to local.php and configure.
+ */
+
+return array(
+   'db' => array(
+        'database'  => '.......',
+        'username'  => '.......',
+        'password'  => '.......'
+   )
+);

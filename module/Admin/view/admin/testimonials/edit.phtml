@@ -1,0 +1,36 @@
+<?php if($getEdit){ ?>
+<form class="edit-form" action="<?php echo($this->easyUrl(array('id' => $getEdit['id']))); ?>" method="post" enctype="multipart/form-data">
+  <fieldset>
+    <legend>Редактирование отзыва</legend>
+    <div class="control-group">        
+        <label class="control-label">Имя</label>
+        <div class="controls">
+            <input type="text" name="name" placeholder="Введите текст…" maxlength="150" value="<?php echo($getEdit['name']); ?>">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Электронный адрес</label>
+        <div class="controls">            
+            <input type="text" name="email" placeholder="Введите текст…" maxlength="200" value="<?php echo($getEdit['email']); ?>">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Отзыв</label>
+        <div class="controls">
+            <textarea name="comment" class="textarea-fix-size span5" maxlength="1000" placeholder="Введите текст…" rows="10"><?php echo($getEdit['comment']); ?></textarea>
+        </div>
+    </div>
+    <label class="checkbox">
+        <input type="checkbox" name="is_verified" value="y"<?php echo(($getEdit['is_verified'] == 'y') ? ' checked="checked"' : ''); ?>> Статус "Активный"
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Сохранить</button>
+      <a class="btn" href="<?php echo($this->easyUrl(array('action' => 'index'))); ?>">Отменить</a>
+    </div>
+  </fieldset>
+  <input type="hidden" name="edit-form" value="0">
+  <input type="hidden" name="validator" value="<?php echo($this->easyUrl(array('module' => 'application', 'action' => 'validator'))); ?>">
+</form>
+<?php }else{ ?>
+<h3>Нет данных</h3>
+<?php } ?>

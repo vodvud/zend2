@@ -1,0 +1,14 @@
+<header class="header container">
+    <strong class="logo"><a href="<?php echo($this->basePath('/')); ?>">Logo</a></strong>
+    <?php echo($this->partial('profile-partials/login-holder.phtml')); ?>
+    <nav>
+        <ul>
+            <li<?php echo(($this->routeNames('module')=='application' && $this->routeNames('controller')=='about-us')?' class="active"':''); ?>>
+                <a href="<?php echo($this->easyUrl(array('module' => 'application', 'controller'=>'about-us'))); ?>" class="link-about">О Нас</a>
+            </li>
+            <li<?php echo(($this->routeNames('module')=='application' && $this->routeNames('controller')=='contact-us')?' class="active"':''); ?>>
+                <a href="<?php echo($this->easyUrl(array('module' => 'application', 'controller'=>'contact-us'))); ?>" class="link-contact">Контакты</a>
+            </li>
+        </ul>
+    </nav>
+</header>

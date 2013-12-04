@@ -1,0 +1,32 @@
+<ul class="nav nav-pills nav-stacked">
+    <li<?php echo(($this->routeNames('controller')=='index') ? ' class="active"' : ''); ?>>
+        <a href="<?php echo($this->easyUrl(array())); ?>">
+            <span class="icon-home"></span> Главная
+        </a>
+    </li>
+    <li<?php echo(($this->routeNames('controller')=='testimonials') ? ' class="active"' : ''); ?>>
+        <a href="<?php echo($this->easyUrl(array('controller' => 'testimonials'))); ?>">
+            <span class="icon-pencil"></span> Отзывы
+        </a>
+    </li>
+    <li<?php echo(($this->routeNames('controller')=='users') ? ' class="active"' : ''); ?>>
+        <a href="<?php echo($this->easyUrl(array('controller' => 'users'))); ?>">
+            <span class="icon-user"></span> Пользователи
+        </a>
+    </li>
+    <li<?php echo(($this->routeNames('controller')=='pages') ? ' class="active"' : ''); ?>>
+        <a href="<?php echo($this->easyUrl(array('controller' => 'pages'))); ?>">
+            <span class="icon-globe"></span> Страницы
+        </a>
+    </li>
+    <li<?php echo(($this->routeNames('controller')=='notification') ? ' class="active"' : ''); ?>>
+        <a href="<?php echo($this->easyUrl(array('controller' => 'notification'))); ?>">
+            <span class="icon-envelope"></span> Почта
+        </a>
+    </li>
+    <li<?php echo(($this->routeNames('controller')=='helps') ? ' class="active"' : ''); ?>>
+        <a href="<?php echo($this->easyUrl(array('controller' => 'helps'))); ?>">
+            <span class="icon-question-sign"></span> Помощник
+        </a>
+    </li>
+</ul>

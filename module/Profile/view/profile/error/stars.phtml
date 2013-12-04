@@ -1,0 +1,7 @@
+<?php echo($this->partial('partials/vehicles-content-menu.phtml', array('vehiclesCat' => $vehiclesCat))); ?>
+<div class="wblock">
+    <div class="content">
+        <h3>Ошибка</h3>
+        <p class="error-text">Недостаточно звездочек на счету. Пополните пожалуйста <a href="<?php echo($this->easyUrl(array('controller' => 'wallet'))); ?>">счет</a>.</p>
+    </div>
+</div>
