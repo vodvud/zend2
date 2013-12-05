@@ -14,23 +14,6 @@ class Controller extends \Base\Mvc\Controller
         $this->session = new SessionContainer('profile');
         
         $this->pushTitle('Личный кабинет');
-        
-        $ret = array(
-            'vehiclesCat' => $this->load('VehiclesCat', 'admin')->getCats()
-        );
-        $this->pushView($ret);
-        
-        if(isset($this->session->auth['id'])){            
-            $this->session->star = $this->load('Wallet', 'profile')->get($this->getUserId());
-            
-            $carsCount = $this->load('Users', 'admin')->getCarsCount($this->getUserId());            
-            $this->session->carsCount = 0;
-            foreach($carsCount as $item){
-                if(isset($item['count'])){
-                    $this->session->carsCount = $this->session->carsCount + (int)$item['count'];
-                }
-            }
-        }
     }
     
     /**

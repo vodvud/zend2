@@ -33,24 +33,6 @@
         </div>
     </div>
     <?php echo($this->partial('admin-partials/user-phone-box.phtml')); ?>
-    <div class="control-group">
-        <label class="control-label">Объявления в разделах</label>
-        <div class="row-fluid">            
-            <div class="col span3">            
-            <?php if(isset($carsCount) && is_array($carsCount)){ ?>
-                <?php if(count($carsCount) > 0){ ?>
-                <ul class="nav nav-pills nav-stacked">
-                    <?php foreach($carsCount as $item){ ?>
-                    <li><a href="<?php echo($this->easyUrl(array('controller' => $item['url'], 'action' => 'index', 'user' => $getEdit['id']))); ?>"><?php echo($item['name'].' ('.$item['count'].')'); ?></a></li>
-                    <?php } ?>
-                </ul>
-                <?php }else{ ?>
-                <h5>нет объявлений</h5>
-                <?php } ?>
-            <?php } ?>
-            </div>
-        </div>
-    </div>
     <div class="form-actions">
       <button type="submit" class="btn btn-primary">Сохранить</button>
       <a class="btn" href="<?php echo($this->easyUrl(array('action' => 'index'))); ?>">Отменить</a>

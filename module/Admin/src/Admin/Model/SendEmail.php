@@ -39,8 +39,8 @@ class SendEmail extends \Application\Base\Model
 
             $message = new Message();
             $message->setTo($email)
-                    ->setFrom(self::EMAIL_NOTIFICATION_FROM, '5 Звезд')
-                    ->setReplyTo(self::EMAIL_NOTIFICATION_FROM, '5 Звезд')
+                    ->setFrom(self::EMAIL_NOTIFICATION_FROM, 'Site Name')
+                    ->setReplyTo(self::EMAIL_NOTIFICATION_FROM, 'Site Name')
                     ->setSubject($title)
                     ->setBody($body)
                     ->setEncoding('UTF-8');

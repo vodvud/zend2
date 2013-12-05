@@ -46,7 +46,6 @@ class UsersController extends \Admin\Base\Controller
                 'phoneMask' => $this->load('Phone', 'admin')->getPhoneMask(),
                 'phonePlaceholder' => $this->load('Phone', 'admin')->getPlaceholder(),
                 'phoneMaskArray' => $this->load('Phone', 'admin')->getMaskArray(),
-                'carsCount' => $this->load('Users', 'admin')->getCarsCount($id),
             );
 
             return $this->view($ret);
