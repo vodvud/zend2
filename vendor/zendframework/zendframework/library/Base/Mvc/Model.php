@@ -7,6 +7,7 @@ use Base\Sql\CustomSelect;
 use Base\Mvc\ReflectionClass;
 use Base\Mvc\ModelsLoader;
 use Base\Mvc\Paginator;
+use Base\Text\Translit;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Update;
@@ -321,6 +322,18 @@ class Model
         }
         
         return $ret;
+    }
+    
+    /**
+     * Translit string
+     * @param string $string
+     * @param string $separator
+     * @param boolean $lowercase
+     * @return string
+     */
+    public final function translit($string = '', $separator = '-', $lowercase = true){
+        $translit = new Translit();
+        return $translit($string, $separator, $lowercase);
     }
     
     /**

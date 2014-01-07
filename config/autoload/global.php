@@ -14,7 +14,6 @@
 return array(
    'db' => array(
         'driver'    => 'Pdo_Mysql',
-        'hostname'  => 'localhost',
         'port'      => '3306',
         'charset'   => 'UTF8',
         'driver_options' =>  array(

@@ -7,8 +7,9 @@
 
 return array(
    'db' => array(
-        'database'  => '.......',
-        'username'  => '.......',
-        'password'  => '.......'
+        'hostname'  => 'localhost',
+        'database'  => '.....',
+        'username'  => '.....',
+        'password'  => '.....'
    )
 );

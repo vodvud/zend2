@@ -46,10 +46,9 @@ class Controller extends AbstractActionController
      * View Constructor
      *
      * @param  null|array|Traversable $variables
-     * @param  array|Traversable $options
      * @param  string $template
      */
-    public final function view($variables = null, $options = null, $template = null){  
+    public final function view($variables = null, $template = null){  
         if($this->storage()->headTitle !== null){
             // add title
             if(is_array($this->storage()->headTitle)){
@@ -74,7 +73,7 @@ class Controller extends AbstractActionController
             $this->storage()->viewVars = null;
         }
         
-        $viewModel = new ViewModel($variables, $options);
+        $viewModel = new ViewModel($variables);
         
         if($template !== null){
             $viewModel->setTemplate($template);
@@ -87,10 +86,9 @@ class Controller extends AbstractActionController
      * Json Constructor
      *
      * @param  null|array|Traversable $variables
-     * @param  array|Traversable $options
      */
-    public final function json($variables = null, $options = null){
-        return new JsonModel($variables, $options);
+    public final function json($variables = null){
+        return new JsonModel($variables);
     }
     
     /**

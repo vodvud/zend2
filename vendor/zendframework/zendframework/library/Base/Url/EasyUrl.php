@@ -91,11 +91,15 @@ class EasyUrl extends AbstractHelper
                 $request = array();
 
                 foreach($params as $key=>$val){
-                    $request[] = urlencode($key);
-                    $request[] = urlencode($val);
+                    if($val !== null){                        
+                        $request[] = urlencode($key);
+                        $request[] = urlencode($val);
+                    }
                 }
 
-                $urlParams['get_http_request_string'] = implode('/', $request);
+                if(sizeof($request) > 0){
+                    $urlParams['get_http_request_string'] = implode('/', $request);
+                }
             }
         }
         
