@@ -21,7 +21,7 @@ class TestimonialsController extends \Application\Base\Controller
             'paginator' => $this->load('Testimonials')->getPaginator($page)
         );
 
-        return $this->view($ret, null, 'application/testimonials/index.phtml');
+        return $this->view($ret, 'application/testimonials/index.phtml');
     }
 
     public function addAction(){
@@ -63,7 +63,7 @@ class TestimonialsController extends \Application\Base\Controller
             'paginator' => null
         );
 
-        return $this->view($ret, null, 'application/testimonials/index.phtml');
+        return $this->view($ret, 'application/testimonials/index.phtml');
     }
     
     public function validatorAction(){
