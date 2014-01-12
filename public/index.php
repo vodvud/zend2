@@ -3,6 +3,9 @@
  * This makes our life easier when dealing with paths. Everything is relative
  * to the application root now.
  */
+// set the default timezone to use. Available since PHP 5.1
+date_default_timezone_set('UTC');
+ 
 // Define path to application directory
 defined('BASE_PATH') || define('BASE_PATH', realpath(__DIR__ . '/..'));
 defined('PUBLIC_PATH') || define('PUBLIC_PATH', __DIR__);
