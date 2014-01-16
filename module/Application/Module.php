@@ -18,6 +18,7 @@ use Base\Storage;
 use Base\Url\RouteNamesLoader;
 use Base\Url\RouteNamesHelper;
 use Base\Text\Truncate;
+use Base\Text\SiteNameHelper;
 
 class Module
 {
@@ -31,6 +32,7 @@ class Module
         $config = $e->getApplication()->getServiceManager()->get('Config');
         $storage = new Storage();
         $storage->dbConfig = $config['db'];
+        $storage->siteConfig = $config['site'];
 
         $sharedEvents = $eventManager->getSharedManager();
         $routeNames = new RouteNamesLoader($sharedEvents);
@@ -76,6 +78,9 @@ class Module
                 },
                 'truncate' => function() {                   
                     return new Truncate();
+                },
+                'siteName' => function() {                   
+                    return new SiteNameHelper();
                 },
             ),
         );

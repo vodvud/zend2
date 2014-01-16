@@ -29,9 +29,6 @@ abstract class Model extends \Base\Mvc\Model
     const EMAIL_REFILL = 'refill';
     const EMAIL_FORGOT = 'forgot';
 
-    // Notification from
-    const EMAIL_NOTIFICATION_FROM = 'info@uslugi.kz';
-
     /**
      * Get limiter
      * @param array $params search params
