@@ -88,7 +88,7 @@ CREATE TABLE `user` (
   `password` char(128) NOT NULL,
   `salt` char(10) NOT NULL,
   `level` enum('admin','user') NOT NULL DEFAULT 'user',
-  `name` char(100) NOT NULL,
+  `name` char(100) NOT NULL DEFAULT '',
   `star` int(10) unsigned NOT NULL DEFAULT '0',
   `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
