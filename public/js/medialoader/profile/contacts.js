@@ -82,18 +82,14 @@ function profile_contacts_formValidator(){
         if($(status).val() == 0){            
             e.preventDefault();
             var url = $(form).find('input[name="validator"]').val();
-            var name = [];
             var phone = [];
-            
-            $(form).find('input.name-item').each(function(index, elem){
-                name[index] = $(elem).val();
-            });
+
             $(form).find('input.phone-items').each(function(index, elem){
                 phone[index] = $(elem).val();
             });
             
             var vals = {
-                name: name,
+                name: $(form).find('input.name-item').val(),
                 phone: phone
             }
 
