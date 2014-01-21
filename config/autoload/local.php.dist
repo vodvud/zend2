@@ -8,8 +8,11 @@
 return array(
    'db' => array(
         'hostname'  => 'localhost',
-        'database'  => '.....',
-        'username'  => '.....',
-        'password'  => '.....'
+        'database'  => '.......',
+        'username'  => '.......',
+        'password'  => '.......'
+   ),
+   'site' => array(
+       'email' => 'info@chdev.com.ua'
    )
 );

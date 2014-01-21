@@ -345,5 +345,21 @@ class Model
         
         \Zend\Debug\Debug::dump($obj);
     }
+          
+    /**
+     * Returns site email.
+     * @return string
+     */
+    public final function getSiteEmail(){        
+        return isset($this->storage()->siteConfig['email']) ? $this->storage()->siteConfig['email'] : 'info@'.$_SERVER['HTTP_HOST'];
+    }
+    
+    /**
+     * Returns site name.
+     * @return string
+     */
+    public final function getSiteName(){
+        return isset($this->storage()->siteConfig['name']) ? $this->storage()->siteConfig['name'] : 'Site Name';
+    }
     
 }

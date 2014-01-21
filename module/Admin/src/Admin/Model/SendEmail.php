@@ -26,7 +26,7 @@ class SendEmail extends \Application\Base\Model
             $htmlTpl .= '</head>';
             $htmlTpl .= '<body>';
             $htmlTpl .= $content;
-            $htmlTpl .= '<hr><a href="' . $this->basePath() . '/profile">'. $this->basePath() . '/profile</a>';
+            $htmlTpl .= '<br><br><hr><a href="' . $this->basePath() . '/profile">'. $this->basePath() . '/profile</a>';
             $htmlTpl .= '</body>';
             $htmlTpl .= '</html>';
 
@@ -39,8 +39,8 @@ class SendEmail extends \Application\Base\Model
 
             $message = new Message();
             $message->setTo($email)
-                    ->setFrom(self::EMAIL_NOTIFICATION_FROM, 'Site Name')
-                    ->setReplyTo(self::EMAIL_NOTIFICATION_FROM, 'Site Name')
+                    ->setFrom($this->getSiteEmail(), $this->getSiteName())
+                    ->setReplyTo($this->getSiteEmail(), $this->getSiteName())
                     ->setSubject($title)
                     ->setBody($body)
                     ->setEncoding('UTF-8');

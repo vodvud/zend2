@@ -31,6 +31,7 @@ class Module
         $config = $e->getApplication()->getServiceManager()->get('Config');
         $storage = new Storage();
         $storage->dbConfig = $config['db'];
+        $storage->siteConfig = $config['site'];
 
         $sharedEvents = $eventManager->getSharedManager();
         $routeNames = new RouteNamesLoader($sharedEvents);

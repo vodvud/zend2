@@ -1,6 +1,6 @@
         <div class="footer-menu container">
             <div class="col">
-                <h4>Site Name</h4>
+                <h4><?php echo($this->siteName()); ?></h4>
                 <ul>
                     <li><a href="<?php echo($this->easyUrl(array('module' => 'application', 'controller'=>'about-us'))); ?>">О Компании</a></li>
                     <li><a href="<?php echo($this->easyUrl(array('module' => 'application', 'controller'=>'testimonials'))); ?>">Отзывы</a></li>
@@ -31,5 +31,5 @@
     </div>
 </div>
 <footer class="footer">
-    <div>&copy; <?php echo(date('Y')); ?> «Site Name». Все права защищены.</div>
+    <div>&copy; <?php echo(date('Y')); ?> «<?php echo($this->siteName()); ?>». Все права защищены.</div>
 </footer>
