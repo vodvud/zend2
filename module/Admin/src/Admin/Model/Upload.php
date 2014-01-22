@@ -15,7 +15,7 @@ class Upload extends \Application\Base\Model
      * @param array $params
      * @return null|string
      */
-    public function save($file = null, $type = null, $cat = null, $params = array('width' => 800, 'height' => 600)){
+    public function save($file = null, $type = null, $cat = null, $params = array('width' => 1024, 'height' => 768)){
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
         
         $ret = null;

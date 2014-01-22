@@ -44,8 +44,8 @@ class ImageResize extends AbstractFilter
      * @see setOptions
      */
     protected $options = array(
-        'width'   => 800,                    // Width of image
-        'height'  => 600,                    // Height of image
+        'width'   => 1024,                    // Width of image
+        'height'  => 768,                    // Height of image
         'method'  => self::METHOD_SCALE_MAX, // Method of image creating
         'percent' => 0,                      // Size of image per size of original image
         'halign'  => self::ALIGN_CENTER,     // Horizontal align

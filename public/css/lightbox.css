@@ -46,7 +46,7 @@ body:after {
   position: relative;
   background-color: white;
   *zoom: 1;
-  max-width: 950px;
+  max-width: 1050px;
   max-height: 850px;
   margin: 0 auto;
   -webkit-border-radius: 4px;
