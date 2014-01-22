@@ -14,6 +14,12 @@ class Controller extends \Base\Mvc\Controller
         $this->session = new SessionContainer('profile');
         
         $this->pushTitle('Личный кабинет');
+        
+        if(isset($this->session->auth['id'])){            
+            $this->session->star = $this->load('Wallet', 'profile')->get($this->getUserId());
+                      
+            $this->session->carsCount = 0;
+        }
     }
     
     /**

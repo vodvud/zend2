@@ -339,48 +339,4 @@ class Users extends \Application\Base\Model
 
         return $this->paginator($page, $count, self::USERS_PER_PAGE);
     }
-    
-    public function getCarsCount($userId = 0){
-        $this->log(__CLASS__ . '\\' . __FUNCTION__);
-        
-        $ret = array();
-        
-        $count = $this->load('VehiclesCarRent', 'admin')->getCount($userId);
-        if($count > 0){
-            $ret[] = array(
-                'url' => 'vehicles-'.self::VEHICLES_CAT_CAR_RENT,
-                'name' => $this->load('VehiclesCat', 'admin')->getCatName(self::VEHICLES_CAT_CAR_RENT),
-                'count' => $count
-            );
-        }
-        
-        $count = $this->load('VehiclesPassengerTransportation', 'admin')->getCount($userId);
-        if($count > 0){
-            $ret[] = array(
-                'url' => 'vehicles-'.self::VEHICLES_CAT_PASSENGER_TRANSPORTATION,
-                'name' => $this->load('VehiclesCat', 'admin')->getCatName(self::VEHICLES_CAT_PASSENGER_TRANSPORTATION),
-                'count' => $count
-            );
-        }
-        
-        $count = $this->load('VehiclesFreightTransportation', 'admin')->getCount($userId);
-        if($count > 0){
-            $ret[] = array(
-                'url' => 'vehicles-'.self::VEHICLES_CAT_FREIGHT_TRANSPORTATION,
-                'name' => $this->load('VehiclesCat', 'admin')->getCatName(self::VEHICLES_CAT_FREIGHT_TRANSPORTATION),
-                'count' => $count
-            );
-        }
-        
-        $count = $this->load('VehiclesSpecialMachinery', 'admin')->getCount($userId);
-        if($count > 0){
-            $ret[] = array(
-                'url' => 'vehicles-'.self::VEHICLES_CAT_SPECIAL_MACHINERY,
-                'name' => $this->load('VehiclesCat', 'admin')->getCatName(self::VEHICLES_CAT_SPECIAL_MACHINERY),
-                'count' => $count
-            );
-        }
-        
-        return $ret;
-    }
 }
