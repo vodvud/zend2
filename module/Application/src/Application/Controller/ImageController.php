@@ -26,7 +26,8 @@ class ImageController extends \Base\Mvc\Controller
         
         return $this->load('Image')->get($url, $w, $h);
     }
-
+  */
+    
     public function blogAction(){
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
 
@@ -35,5 +36,4 @@ class ImageController extends \Base\Mvc\Controller
 
         return $this->load('Image')->get($url);
     }
-  */
 }
