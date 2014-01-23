@@ -11,7 +11,7 @@ update-2013-12-03#10254.sql
 ```
 10254 - task #
 
-### directory permission 0777 and file permission 0666
+### Permissions: directory 0777 and file 0666
 ```code
 data/cache
 public/upload
