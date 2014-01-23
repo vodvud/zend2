@@ -1,0 +1,22 @@
+<div class="wblock">
+    <div class="content">
+        <?php if($post){ ?>
+
+                <article>
+                    <h1><?php echo($post['title']); ?></h1>
+                    <p><?php echo($post['description']);?></p>
+                    <?php if(!empty($post['img'])){ ?>
+                    <div class="image-preview">
+                        <img src="<?php echo($this->easyUrl(array('controller' => 'image', 'action' => $this->routeNames('controller'), 'id' => $post['id']))); ?>" alt="">
+                    </div>
+                    <?php } ?>
+                    <div class="clearfix"></div>
+                    <a class="btn-read-more" href="<?php echo($this->basePath().'/blog'); ?>">Назад</a>
+                </article>
+
+        <?php } ?>
+      </div>
+    <aside>
+        
+    </aside>
+</div>

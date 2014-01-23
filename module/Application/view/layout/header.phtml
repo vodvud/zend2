@@ -3,6 +3,9 @@
     <?php echo($this->partial('profile-partials/login-holder.phtml')); ?>
     <nav>
         <ul>
+            <li<?php echo(($this->routeNames('module')=='application' && $this->routeNames('controller')=='blog')?' class="active"':''); ?>>
+                <a href="<?php echo($this->easyUrl(array('module' => 'application', 'controller'=>'blog'))); ?>" class="link-blog">Блог</a>
+            </li>
             <li<?php echo(($this->routeNames('module')=='application' && $this->routeNames('controller')=='about-us')?' class="active"':''); ?>>
                 <a href="<?php echo($this->easyUrl(array('module' => 'application', 'controller'=>'about-us'))); ?>" class="link-about">О Нас</a>
             </li>

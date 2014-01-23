@@ -1,0 +1,20 @@
+<div class="wblock">
+    <div class="content">
+        <?php if($blogItems){ ?>
+            <?php foreach ($blogItems as $item) { ?>
+        <article>
+            <h1><?php echo($item['title']); ?></h1>
+            <p><?php echo($this->truncate($item['description'], 800));?></p>
+            <div class="clearfix"></div>
+            <a class="btn-read-more" href="<?php echo($this->basePath().'/blog/post/id/'.$item['id']); ?>">Читать Дальше</a>
+        </article>
+            <?php } ?>
+        <?php } ?>
+        <caption>
+            <?php echo($this->partial('partials/paginator.phtml', array('paginator' => $paginator))); ?>
+        </caption>
+    </div>
+    <aside>
+        
+    </aside>
+</div>

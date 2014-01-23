@@ -13,6 +13,7 @@ abstract class Model extends \Base\Mvc\Model
     const TABLE_PHONE_MASK = 'phone_mask';
     const TABLE_EMAIL_NOTIFICATIONS = 'email_notifications';
     const TABLE_HELPS = 'helps';
+    const TABLE_BLOG = 'blog';
 
     // Users level
     const USERS_LEVEL_ADMIN = 'admin';

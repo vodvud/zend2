@@ -9,6 +9,11 @@
             <span class="icon-pencil"></span> Отзывы
         </a>
     </li>
+    <li<?php echo(($this->routeNames('controller')=='blog') ? ' class="active"' : ''); ?>>
+        <a href="<?php echo($this->easyUrl(array('controller' => 'blog'))); ?>">
+            <span class="icon-list-alt"></span> Блог
+        </a>
+    </li>
     <li<?php echo(($this->routeNames('controller')=='users') ? ' class="active"' : ''); ?>>
         <a href="<?php echo($this->easyUrl(array('controller' => 'users'))); ?>">
             <span class="icon-user"></span> Пользователи
