@@ -19,3 +19,8 @@ public/css/medialoader
 public/js/medialoader
 ```
 
+### Project log
+```code
+create file and set permission 0666
+data/cache/project.log
+```
