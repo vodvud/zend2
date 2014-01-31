@@ -293,6 +293,38 @@ class Controller extends AbstractActionController
                  )
         );
     }
+     
+    /**
+     * Add script
+     * @param string $file
+     * @param boolean $append
+     */
+    public final function addHeadScript($file = null, $append = true){
+        if($file !== null){
+            $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\PhpRenderer');    
+            if($append === true){
+                $renderer->headScript()->appendFile($file);
+            }else{
+                $renderer->headScript()->prependFile($file);
+            }
+        }
+    }
+    
+    /**
+     * Add css
+     * @param string $file
+     * @param boolean $append
+     */
+    public final function addHeadLink($file = null, $append = true){
+        if($file !== null){
+            $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\PhpRenderer');    
+            if($append === true){
+                $renderer->headLink()->appendStylesheet($file);
+            }else{
+                $renderer->headLink()->prependStylesheet($file);
+            }
+        }
+    }
     
     /**
      * Set Title
