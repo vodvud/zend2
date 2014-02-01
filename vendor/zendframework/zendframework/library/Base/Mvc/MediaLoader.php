@@ -16,7 +16,9 @@ class MediaLoader extends AbstractHelper
             'basePath' => $view->basePath(),
             'routeNames' => $storage->routeNames,
             'css' => $view->headLink(),
-            'js' => $view->headScript()
+            'js' => $view->headScript(),
+            'addCSS' => $storage->addHeadLinks,
+            'addJS' => $storage->addHeadScripts,
         );
 
         self::loadCSS($params);          
@@ -42,6 +44,14 @@ class MediaLoader extends AbstractHelper
         if(self::checkFile($actionCSS, $params->routeNames)){
             $params->css->appendStylesheet($params->basePath.$actionCSS);  
         }
+        
+        if(is_array($params->addCSS)){
+            foreach($params->addCSS as $addCSS){
+                if(self::checkFile($addCSS, $params->routeNames)){
+                    $params->css->appendStylesheet($params->basePath.$addCSS);
+                }
+            }
+        }
     }
     
 	/**
@@ -60,7 +70,15 @@ class MediaLoader extends AbstractHelper
         $actionJS = self::getActionFileName($params->routeNames, 'js');
         if(self::checkFile($actionJS, $params->routeNames)){
             $params->js->appendFile($params->basePath.$actionJS);  
-        }       
+        }
+        
+        if(is_array($params->addJS)){
+            foreach($params->addJS as $addJS){
+                if(self::checkFile($addJS, $params->routeNames)){
+                    $params->js->appendFile($params->basePath.$addJS);
+                }
+            }
+        }
     }
 
     /**
