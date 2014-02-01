@@ -31,16 +31,6 @@
                  ->prependFile($this->basePath() . '/js/libs/lightbox-2.6.min.js')
                  ->prependFile($this->basePath() . '/js/libs/modernizr-2.6.2.min.js') 
                  ->prependFile($this->basePath() . '/js/libs/jquery-1.10.2.min.js');
-            
-            if($this->routeNames('module') == 'profile'){
-                 $this->headLink()
-                      ->appendStylesheet($this->basePath() . '/css/medialoader/application.css');
-                 
-                 $this->headScript()
-                      ->appendFile($this->basePath() . '/js/tinymce/jquery.tinymce.min.js')
-                      ->appendFile($this->basePath() . '/js/libs/bootstrap-formhelpers-phone.js')
-                      ->appendFile($this->basePath() . '/js/medialoader/application.js');
-            }
 
             $this->mediaLoader();
             

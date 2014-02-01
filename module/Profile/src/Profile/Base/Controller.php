@@ -20,6 +20,12 @@ class Controller extends \Base\Mvc\Controller
                       
             $this->session->carsCount = 0;
         }
+        
+        // add css and js
+        $this->addHeadLink('/css/medialoader/application.css', false);
+        $this->addHeadScript('/js/tinymce/jquery.tinymce.min.js', false);
+        $this->addHeadScript('/js/libs/bootstrap-formhelpers-phone.js', false);
+        $this->addHeadScript('/js/medialoader/application.js', false);
     }
     
     /**

@@ -51,6 +51,7 @@ return array(
        'doctype'                  => 'HTML5',
        'not_found_template'       => 'error/404',
        'exception_template'       => 'error/index',
+       'base_path' => ($_SERVER['SERVER_PORT'] == 443 ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'],
        'template_map' => array(
             'layout/layout'       => BASE_PATH.'/module/default/view/layout/layout.phtml',
             'error/404'           => BASE_PATH.'/module/default/view/error/404.phtml',

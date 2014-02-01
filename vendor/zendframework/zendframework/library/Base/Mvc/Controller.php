@@ -284,7 +284,7 @@ class Controller extends AbstractActionController
     public final function easyUrl($params = array(), $query = array(), $reuseMatchedParams = false){
         $data = EasyUrl::url((array)$params, (array)$query, (array)$this->routeNames(), (bool)$reuseMatchedParams);
         
-        return EasyUrl::decode(
+        return $this->basePath().EasyUrl::decode(
             $this->url()
                  ->fromRoute(
                          $data['defaultRouter'], 
@@ -295,37 +295,52 @@ class Controller extends AbstractActionController
     }
     
     /**
-     * Add script
-     * @param string $file
+     * Returns site's base path.
+     * 
+     * @return string
      */
-    public final function addHeadScript($file = null){
+    public final function basePath(){
+        return ($this->storage()->basePath !== null) ? $this->storage()->basePath : '';
+    }
+    
+    /**
+     * Add script
+     * @param string $file File source
+     * @param bollean $append Add append or prepend on section medialoader
+     */
+    public final function addHeadScript($file = null, $append = true){
         if($file !== null){
-            if($this->storage()->addHeadScripts === null){
-                $this->storage()->addHeadScripts = array();
+            $addPriority = ($append === true) ? 'addHeadScripts_append' : 'addHeadScripts_prepend';
+            
+            if($this->storage()->$addPriority === null){
+                $this->storage()->$addPriority = array();
             }
             
-            $addHeadScripts = $this->storage()->addHeadScripts;
-            if(!in_array($file, $addHeadScripts)){                
-                array_push($addHeadScripts, $file);
-                $this->storage()->addHeadScripts = $addHeadScripts;
+            $array = $this->storage()->$addPriority;
+            if(!in_array($file, $array)){                
+                array_push($array, $file);
+                $this->storage()->$addPriority = $array;
             }
         }
     }
     
     /**
      * Add css
-     * @param string $file
+     * @param string $file File source
+     * @param bollean $append Add append or prepend on section medialoader
      */
-    public final function addHeadLink($file = null){
+    public final function addHeadLink($file = null, $append = true){
         if($file !== null){
-            if($this->storage()->addHeadLinks === null){
-                $this->storage()->addHeadLinks = array();
+            $addPriority = ($append === true) ? 'addHeadLinks_append' : 'addHeadLinks_prepend';
+            
+            if($this->storage()->$addPriority === null){
+                $this->storage()->$addPriority = array();
             }
             
-            $addHeadLinks = $this->storage()->addHeadLinks;
-            if(!in_array($file, $addHeadLinks)){                
-                array_push($addHeadLinks, $file);
-                $this->storage()->addHeadLinks = $addHeadLinks;
+            $array = $this->storage()->$addPriority;
+            if(!in_array($file, $array)){                
+                array_push($array, $file);
+                $this->storage()->$addPriority = $array;
             }
         }
     }
@@ -404,9 +419,16 @@ class Controller extends AbstractActionController
     /**
      * Debuger
      * @param mixed $obj
+     * @param boolean $isDie
      */
-    public final function debug($obj){        
+    public final function debug($obj, $isDie = true){
+        $this->log(__CLASS__ . '\\' . __FUNCTION__);
+        
         \Zend\Debug\Debug::dump($obj);
+        
+        if($isDie === true){
+            die();
+        }
     }
         
 }

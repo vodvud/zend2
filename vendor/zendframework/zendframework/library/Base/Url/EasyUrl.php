@@ -19,7 +19,7 @@ class EasyUrl extends AbstractHelper
         
         $data = self::url((array)$params, (array)$query, (array)$storage->routeNames, (bool)$reuseMatchedParams);
         
-        return self::decode(
+        return $view->basePath().self::decode(
                 $view->url(
                     $data['defaultRouter'], 
                     $data['urlParams'], 

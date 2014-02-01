@@ -17,8 +17,14 @@ class MediaLoader extends AbstractHelper
             'routeNames' => $storage->routeNames,
             'css' => $view->headLink(),
             'js' => $view->headScript(),
-            'addCSS' => $storage->addHeadLinks,
-            'addJS' => $storage->addHeadScripts,
+            'addCSS' => array(
+                'append' => $storage->addHeadLinks_append,
+                'prepend' => $storage->addHeadLinks_prepend,
+            ),
+            'addJS' => array(
+                'append' => $storage->addHeadScripts_append,
+                'prepend' => $storage->addHeadScripts_prepend,
+            )
         );
 
         self::loadCSS($params);          
@@ -32,6 +38,14 @@ class MediaLoader extends AbstractHelper
 	 * @param object &$params
 	 */
     private static function loadCSS(&$params){
+        if(is_array($params->addCSS['prepend'])){
+            foreach($params->addCSS['prepend'] as $addCSS){
+                if(self::checkFile($addCSS, $params->routeNames)){
+                    $params->css->appendStylesheet($params->basePath.$addCSS);
+                }
+            }
+        }
+        
         $moduleCSS = self::getModuleFileName($params->routeNames, 'css');
         if(self::checkFile($moduleCSS, $params->routeNames)){
             $params->css->appendStylesheet($params->basePath.$moduleCSS);  
@@ -45,8 +59,8 @@ class MediaLoader extends AbstractHelper
             $params->css->appendStylesheet($params->basePath.$actionCSS);  
         }
         
-        if(is_array($params->addCSS)){
-            foreach($params->addCSS as $addCSS){
+        if(is_array($params->addCSS['append'])){
+            foreach($params->addCSS['append'] as $addCSS){
                 if(self::checkFile($addCSS, $params->routeNames)){
                     $params->css->appendStylesheet($params->basePath.$addCSS);
                 }
@@ -59,6 +73,14 @@ class MediaLoader extends AbstractHelper
 	 * @param object &$params
 	 */
     private static function loadJS(&$params){
+        if(is_array($params->addJS['prepend'])){
+            foreach($params->addJS['prepend'] as $addJS){
+                if(self::checkFile($addJS, $params->routeNames)){
+                    $params->js->appendFile($params->basePath.$addJS);
+                }
+            }
+        }
+        
         $moduleJS = self::getModuleFileName($params->routeNames, 'js');
         if(self::checkFile($moduleJS, $params->routeNames)){
             $params->js->appendFile($params->basePath.$moduleJS);  
@@ -72,8 +94,8 @@ class MediaLoader extends AbstractHelper
             $params->js->appendFile($params->basePath.$actionJS);  
         }
         
-        if(is_array($params->addJS)){
-            foreach($params->addJS as $addJS){
+        if(is_array($params->addJS['append'])){
+            foreach($params->addJS['append'] as $addJS){
                 if(self::checkFile($addJS, $params->routeNames)){
                     $params->js->appendFile($params->basePath.$addJS);
                 }

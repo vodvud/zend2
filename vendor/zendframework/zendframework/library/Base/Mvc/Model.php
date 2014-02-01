@@ -290,7 +290,7 @@ class Model
      * @return string
      */
     public final function basePath(){
-        return ($_SERVER['SERVER_PORT'] == 443 ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'];
+        return ($this->storage()->basePath !== null) ? $this->storage()->basePath : '';
     }
     
     /**
@@ -339,11 +339,16 @@ class Model
     /**
      * Debuger
      * @param mixed $obj
+     * @param boolean $isDie
      */
-    public final function debug($obj){
+    public final function debug($obj, $isDie = true){
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
         
         \Zend\Debug\Debug::dump($obj);
+        
+        if($isDie === true){
+            die();
+        }
     }
           
     /**

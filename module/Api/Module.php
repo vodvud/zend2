@@ -27,6 +27,7 @@ class Module
         $storage = new Storage();
         $storage->dbConfig = $config['db'];
         $storage->siteConfig = $config['site'];
+        $storage->basePath = $config['view_manager']['base_path'];
 
         $sharedEvents = $eventManager->getSharedManager();
         $routeNames = new RouteNamesLoader($sharedEvents);
