@@ -14,8 +14,9 @@ class Image extends \Application\Base\Model
      * @param string $url
      * @param int $w
      * @param int $h
+     * @param string $crop "y" or "n"
      */
-    public function get($url = null, $w = 0, $h = 0){
+    public function get($url = null, $w = 0, $h = 0, $crop = 'n'){
         $this->log(__CLASS__.'\\'.__FUNCTION__);
         
         if($url !== null && !empty($url)){
@@ -52,9 +53,9 @@ class Image extends \Application\Base\Model
                     file_put_contents($cacheDir.$cacheImage, $image);
                 }
 
-                if((int)$w > 0 && (int)$h > 0){
+                if((int)$w > 0 && (int)$h > 0 && in_array($crop, array('y', 'n'))){
                     // small image
-                    $copyImage = $cacheDir.$cacheHash.'_'.$w.'_'.$h.'.'.$this->getFileType($url);
+                    $copyImage = $cacheDir.$cacheHash.'_'.$w.'_'.$h.(($crop=='y') ? '_crop' : '').'.'.$this->getFileType($url);
                     if(
                        is_file($copyImage) && 
                        is_readable($copyImage) && 
@@ -64,7 +65,8 @@ class Image extends \Application\Base\Model
                         $image = file_get_contents($copyImage);
                     }else{
                         if(copy($cacheDir.$cacheImage, $copyImage)){
-                            $resize = new ImageResize(array('width' => $w, 'height' => $h));
+                            $method = ($crop == 'y') ? ImageResize::METHOD_SCALE_MIN : ImageResize::METHOD_SCALE_MAX; 
+                            $resize = new ImageResize(array('width' => $w, 'height' => $h, 'method' => $method));
                             $resize->filter($copyImage);
                             $image = file_get_contents($copyImage);
                         }

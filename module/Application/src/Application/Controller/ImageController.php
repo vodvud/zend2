@@ -22,9 +22,10 @@ class ImageController extends \Base\Mvc\Controller
         $id = $this->p_int('id');
         $w = $this->p_int('w');
         $h = $this->p_int('h');
+        $crop = $this->p_select('crop', 'n', array('y', 'n'));
         $url = $this->load('PlacesGallery', 'admin')->one($id);
         
-        return $this->load('Image')->get($url, $w, $h);
+        return $this->load('Image')->get($url, $w, $h, $crop);
     }
   */
     
