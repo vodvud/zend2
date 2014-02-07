@@ -114,9 +114,8 @@ class Controller extends AbstractActionController
     }
     
     /**
-     * 
+     * Get File
      * @param str $param
-     * @param str $default
      * @return mixed
      */
     public final function getFiles($param = null){
@@ -130,7 +129,7 @@ class Controller extends AbstractActionController
     }
     
     /**
-     * 
+     * Get integer
      * @param str $param
      * @param int $default
      * @return int
@@ -146,10 +145,10 @@ class Controller extends AbstractActionController
     }
     
     /**
-     * 
+     * Get float
      * @param str $param
      * @param float $default
-     * @param bool|int $decimals
+     * @param int $decimals
      * @return float
      */
     public final function p_float($param = null, $default = 0, $decimals = null){
@@ -170,7 +169,7 @@ class Controller extends AbstractActionController
     }
     
     /**
-     * 
+     * Get float string
      * @param str $param
      * @param float $default
      * @return string
@@ -187,7 +186,7 @@ class Controller extends AbstractActionController
     }
     
     /**
-     * 
+     * Get string
      * @param str $param
      * @param str $default
      * @param bool $strip
@@ -211,7 +210,7 @@ class Controller extends AbstractActionController
     }
     
     /**
-     * 
+     * Get array
      * @param str $param
      * @param array $default
      * @return array
@@ -227,7 +226,7 @@ class Controller extends AbstractActionController
     }
     
     /**
-     * 
+     * Get array and convert in object
      * @param str $param
      * @param object $default
      * @return object
@@ -243,10 +242,10 @@ class Controller extends AbstractActionController
     }
     
     /**
-     * 
+     * Get select
      * @param str $param
      * @param str $default
-     * @param array $array
+     * @param array $array array with variants
      * @return str
      */
     public final function p_select($param = null, $default = '', $array = array()){        
@@ -275,7 +274,7 @@ class Controller extends AbstractActionController
     }
     
     /**
-     * 
+     * URL Constructor
      * @param array $params
      * @param array $query
      * @param bool $reuseMatchedParams Whether to reuse matched parameters
