@@ -420,14 +420,32 @@ class Controller extends AbstractActionController
      * @param mixed $obj
      * @param boolean $isDie
      */
-    public final function debug($obj, $isDie = true){
-        $this->log(__CLASS__ . '\\' . __FUNCTION__);
-        
+    public final function debug($obj, $isDie = true){        
         \Zend\Debug\Debug::dump($obj);
         
         if($isDie === true){
             die();
         }
+    }
+    
+    /**
+     * Json Decode
+     * @param json $value
+     * @param boolean $toArray
+     * @return array
+     */
+    public final function jsonDecode($value, $toArray = true){
+        $type = ($toArray === true) ? \Zend\Json\Json::TYPE_ARRAY : \Zend\Json\Json::TYPE_OBJECT;
+        return \Zend\Json\Json::decode($value, $type);
+    }
+    
+    /**
+     * Json Encode
+     * @param array $value
+     * @return json
+     */
+    public final function jsonEncode($value){
+        return \Zend\Json\Json::encode($value);
     }
         
 }
