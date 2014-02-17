@@ -31,6 +31,31 @@ function closePopupBox(selector){
     return false;
 }
 
+
+/**
+ * @description Scrolling Page
+ *
+ * @param string selector
+ * @param int marginTop
+ */
+function scrollingPage(selector, marginTop){
+    var scrolling = false;
+
+    $(document).scroll(function(){
+        if(scrolling == false){
+            scrolling = true;
+        }
+    });
+    
+    setTimeout(function(){        
+        if(scrolling == false){
+            var margin = ($(marginTop).length > 0) ? parseInt(marginTop) : 0;
+            var top = $(selector).offset().top - margin;
+            $('html, body').animate({scrollTop : top},'slow');
+        }
+    }, 500);
+}
+
 /**
  * @description Set cursor wait
  * 
