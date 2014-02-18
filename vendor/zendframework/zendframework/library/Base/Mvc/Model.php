@@ -1,11 +1,8 @@
 <?php
 namespace Base\Mvc;
 
-use Base\Log;
-use Base\Storage;
 use Base\Sql\CustomSelect;
 use Base\Mvc\ReflectionClass;
-use Base\Mvc\ModelsLoader;
 use Base\Mvc\Paginator;
 use Base\Text\Translit;
 use Zend\Db\Adapter\Adapter;
@@ -18,6 +15,7 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Predicate\PredicateSet;
 use Zend\Math\Rand;
+use Base\Func;
 
 
 /**
@@ -27,7 +25,9 @@ use Zend\Math\Rand;
  */
 class Model
 {
-
+    // Include default methods  (as of PHP 5.4.0)
+    use Func\TraitDefault;
+    
     // SQL constant
     const SQL_ALL = CustomSelect::QUANTIFIER_ALL;
     const SQL_DISTINCT = CustomSelect::QUANTIFIER_DISTINCT;
@@ -51,22 +51,6 @@ class Model
     public final function __get($name) {        
         $reflection = new ReflectionClass($this);
         return $reflection->$name;
-    }
-
-    /**
-     * save log
-     * @param str $str __CLASS__.'\\'.__FUNCTION__
-     */
-    public final function log($str){        
-        Log::save($str);
-    }
-    
-    /**
-     * get storage
-     * @return \Base\Storage
-     */
-    public final function storage(){
-        return new Storage();
     }
     
     /**
@@ -274,26 +258,6 @@ class Model
     }
     
     /**
-     * Load models
-     * @param str $model
-     * @param str $module
-     * @return object
-     * @throws \Zend\Mvc\Exception\InvalidArgumentException
-     */
-    public final function load($model = null, $module = 'application') {
-        return ModelsLoader::load($model, $module);
-    }
-    
-    /**
-     * Returns site's base path.
-     * 
-     * @return string
-     */
-    public final function basePath(){
-        return ($this->storage()->basePath !== null) ? $this->storage()->basePath : '';
-    }
-    
-    /**
      * Page paginator
      * @param int $page Current page
      * @param int $count All rows
@@ -334,79 +298,5 @@ class Model
     public final function translit($string = '', $separator = '-', $lowercase = true){
         $translit = new Translit();
         return $translit($string, $separator, $lowercase);
-    }
-    
-    /**
-     * Debuger
-     * @param mixed $obj
-     * @param boolean $isDie
-     */
-    public final function debug($obj, $isDie = true){        
-        \Zend\Debug\Debug::dump($obj);
-        
-        if($isDie === true){
-            die();
-        }
-    }
-          
-    /**
-     * Returns site email.
-     * @return string
-     */
-    public final function getSiteEmail(){        
-        return isset($this->storage()->siteConfig['email']) ? $this->storage()->siteConfig['email'] : 'info@'.$_SERVER['HTTP_HOST'];
-    }
-    
-    /**
-     * Returns site name.
-     * @return string
-     */
-    public final function getSiteName(){
-        return isset($this->storage()->siteConfig['name']) ? $this->storage()->siteConfig['name'] : 'Site Name';
-    }
-    
-    /**
-     * Json Decode
-     * @param json $value
-     * @param boolean $toArray
-     * @return array|mixed
-     */
-    public final function jsonDecode($value, $toArray = true){
-        if($this->isJson($value) === true){            
-            $type = ($toArray === true) ? \Zend\Json\Json::TYPE_ARRAY : \Zend\Json\Json::TYPE_OBJECT;
-            return \Zend\Json\Json::decode($value, $type);
-        }else{
-           return $value; 
-        }
-    }
-    
-    /**
-     * Json Encode
-     * @param array $value
-     * @return json|mixed
-     */
-    public final function jsonEncode($value){
-        if(is_array($value)){
-            return \Zend\Json\Json::encode($value);
-        }else{
-            return $value;
-        }
-    }
-    
-    
-    /**
-     * Check json string
-     * @param json $json
-     * @return boolean
-     */
-    public final function isJson($json){
-        $ret = false;
-        
-        @json_decode($json);
-        if(json_last_error() === JSON_ERROR_NONE){
-            $ret = true;
-        }
-        
-        return $ret;
     } 
 }
