@@ -125,7 +125,7 @@ function stripTags(selector, allow){
 	      $(selector).find('*:not('+allow+')').remove();
 
           $(selector).html(
-                $(selector).html().replace(/\s+/g, ' ')
+                $(selector).html().replace(/\s{2,}/g, ' ')
           );
 	  }
 	}, 50);
