@@ -123,6 +123,10 @@ function stripTags(selector, allow){
 	  }else{
 	      $(selector).find('*:not('+allow+')').contents().unwrap();
 	      $(selector).find('*:not('+allow+')').remove();
+
+          $(selector).html(
+                $(selector).html().replace(/\s+/g, ' ')
+          );
 	  }
 	}, 50);
     }
