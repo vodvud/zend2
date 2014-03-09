@@ -109,3 +109,18 @@ jQuery.fn.outerHTML = function(s) {
         ? this.before(s).remove()
         : jQuery("<p>").append(this.eq(0).clone()).html();
 };
+
+/**
+ * Strip HTML tags
+ * @param string selector
+ * @param string allow Allow tags
+ */
+function stripTags(selector, allow){
+    if($(selector).length > 0){        
+        if(typeof(allow) === 'undefined' || allow === ''){
+            $(selector).html($(selector).text());
+        }else{
+            $(selector).find('*:not('+allow+')').contents().unwrap();
+        }
+    }
+}
