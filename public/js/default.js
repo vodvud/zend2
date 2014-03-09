@@ -116,11 +116,14 @@ jQuery.fn.outerHTML = function(s) {
  * @param string allow Allow tags
  */
 function stripTags(selector, allow){
-    if($(selector).length > 0){        
-        if(typeof(allow) === 'undefined' || allow === ''){
-            $(selector).html($(selector).text());
-        }else{
-            $(selector).find('*:not('+allow+')').contents().unwrap();
-        }
+    if($(selector).length > 0){
+	setTimeout(function(){
+	  if(typeof(allow) === 'undefined' || allow === ''){
+	      $(selector).html($(selector).text());
+	  }else{
+	      $(selector).find('*:not('+allow+')').contents().unwrap();
+	      $(selector).find('*:not('+allow+')').remove();
+	  }
+	}, 50);
     }
 }
