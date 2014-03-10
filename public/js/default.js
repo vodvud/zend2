@@ -117,17 +117,18 @@ jQuery.fn.outerHTML = function(s) {
  */
 function stripTags(selector, allow){
     if($(selector).length > 0){
-	setTimeout(function(){
-	  if(typeof(allow) === 'undefined' || allow === ''){
-	      $(selector).html($(selector).text());
-	  }else{
-	      $(selector).find('*:not('+allow+')').contents().unwrap();
-	      $(selector).find('*:not('+allow+')').remove();
+        setTimeout(function(){
+          if(typeof(allow) === 'undefined' || allow === ''){
+              $(selector).html($(selector).text());
+          }else{
+              $(selector).find('*:not('+allow+')').contents().unwrap();
+              $(selector).find('*:not('+allow+')').remove();
 
-          $(selector).html(
-                $(selector).html().replace(/\s{2,}/g, ' ')
-          );
-	  }
-	}, 50);
+              $(selector).html(
+                    $(selector).html().replace(/(\n){2,}/g, '<br>')
+                                      .replace(/\s{2,}/g, ' ')
+              );
+          }
+        }, 50);
     }
 }
