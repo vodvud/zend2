@@ -158,6 +158,8 @@ class Model
     const SQL_COMBINE_INTERSECT = CustomSelect::COMBINE_INTERSECT;
     const SQL_WHERE_AND = PredicateSet::OP_AND;
     const SQL_WHERE_OR = PredicateSet::OP_OR;
+    const SQL_COL_IDENTIFIER = PredicateSet::TYPE_IDENTIFIER;
+    const SQL_COL_VALUE = PredicateSet::TYPE_VALUE;
 
     private static $_adapter = null;
     
