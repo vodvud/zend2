@@ -7,6 +7,7 @@ class LoginController extends \Admin\Base\Controller
         $this->log(__CLASS__.'\\'.__FUNCTION__);
         
         $this->unsetAuth();
+        $ret = array();
         
         
         if($this->p_int('login-form') === 1){
@@ -19,9 +20,6 @@ class LoginController extends \Admin\Base\Controller
         
             return $this->setAuth($user);
         }
-        
-        $ret = array();
-        
         return $this->view($ret);
     }
     
@@ -42,8 +40,9 @@ class LoginController extends \Admin\Base\Controller
     private function unsetAuth(){
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
         
-        if(isset($this->session->auth['id'])){
-            unset($this->session->auth);
+        if($this->session('admin')->authId !== null){
+            $this->session('admin')->authId = null;
+            $this->session('admin')->authUsername = null;
         }
     }
     
@@ -53,11 +52,9 @@ class LoginController extends \Admin\Base\Controller
     private function setAuth($user = null){
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
         
-        if(isset($user['id']) && isset($user['username'])){            
-            $this->session->auth = array(
-                'id' => (int)$user['id'],
-                'username' => (string)$user['username']
-            );
+        if(isset($user['id']) && isset($user['username'])){  
+            $this->session('admin')->authId = (int)$user['id'];
+            $this->session('admin')->authUsername = (string)$user['username'];
             
             return $this->redirect()
                          ->toUrl(
@@ -69,5 +66,42 @@ class LoginController extends \Admin\Base\Controller
                              $this->easyUrl(array('controller' => 'login'))
                          );
         }
+    }
+    
+    public function validatorAction(){
+        $this->log(__CLASS__ . '\\' . __FUNCTION__);
+        $this->isAjax();
+        
+        $params = array(
+            'username' => $this->p_string('username'),
+            'password' => $this->p_string('password')
+        );
+        
+        $user = $this->load('Login', 'admin')->authUser($params);
+        
+        $error = array();
+        
+        $validItem = $this->load('Validator')->validStringLength($params['username'], 5, 100);
+        if($validItem == false){
+            $error['username'] = $validItem;
+        }
+        
+        $validItem = $this->load('Validator')->validStringLength($params['password'], 5, 100);
+        if($validItem == false){
+            $error['password'] = $validItem;
+        }
+        
+        if (!$user) {
+            $user = false;
+        }
+        $user = (!$user ? false : true);
+        
+        $ret = array(
+            'status' => (sizeof($error) > 0 ? false : true),
+            'error' => $error,
+            'user' => $user
+        );
+        
+        return $this->json($ret);
     }
 }

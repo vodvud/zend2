@@ -28,7 +28,7 @@ class ClearCacheController extends \Admin\Base\Controller
     private function run($delete = false){
         $this->log(__CLASS__.'\\'.__FUNCTION__);
         
-        $dir = BASE_PATH.'/data/cache/';
+        $dir = PUBLIC_PATH.DIRECTORY_SEPARATOR.'upload'.DIRECTORY_SEPARATOR;
         $it = new \RecursiveDirectoryIterator($dir);
         $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
 

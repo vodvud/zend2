@@ -1,15 +1,16 @@
-<?php echo($this->partial('profile-partials/tabs-menu.phtml')); ?>
-<div class="tab-content">
-    <section class="tab-item">
-        <div class="section-content">
-            <fieldset>
-                <h2>Информация профиля</h2>
-                <div class="row-holder">
-                    <div class="row error-text">
+<div class="wrapper">
+    <div class="wrapper-center">
+        <div class="container">
+            <h2 class="lk-title">Личный кабинет</h2>
+
+            <div class="lk">
+                <?php echo($this->partial('profile-partials/tabs-menu.phtml')); ?>
+                <div class="tab-content uslugi kab">
+                    <div class="error-text" id="tab3">
                         Не совпадает текущий пароль
                     </div>
                 </div>
-            </fieldset>
+            </div>
         </div>
-    </section>
+    </div>
 </div>

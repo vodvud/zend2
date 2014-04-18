@@ -18,8 +18,7 @@ class PagesController extends \Admin\Base\Controller
 
         if($this->p_int('edit-form') === 1){
             $params = array(
-                'content1' => $this->p_string('content1', '', false),
-                'content2' => $this->p_string('content2', '', false)
+                'content' => $this->p_string('content', '', false)
             );
 
             $this->load('Pages', 'admin')->edit($this->p_int('id'), $params);
@@ -41,20 +40,14 @@ class PagesController extends \Admin\Base\Controller
         $this->isAjax();
 
         $params = array(
-            'content1' => $this->p_string('content1', '', false),
-            'content2' => $this->p_string('content2', '', false)
+            'content' => $this->p_string('content', '', false)
         );
 
         $error = array();
 
-        $validItem = $this->load('Validator')->validStringLength($params['content1'], 0, 20000);
+        $validItem = $this->load('Validator')->validStringLength($params['content'], 0, 20000);
         if($validItem == false){
-            $error['content1'] = $validItem;
-        }
-
-        $validItem = $this->load('Validator')->validStringLength($params['content2'], 0, 20000);
-        if($validItem == false){
-            $error['content2'] = $validItem;
+            $error['content'] = $validItem;
         }
 
         $ret = array(

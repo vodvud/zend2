@@ -48,4 +48,12 @@ class ErrorController extends \Profile\Base\Controller
         
         return $this->view($ret);
     }
+    
+    public function walletAction(){
+        $this->log(__CLASS__.'\\'.__FUNCTION__);
+        
+        $ret = array();
+        
+        return $this->view($ret);
+    }
 }

@@ -78,7 +78,7 @@ class Validator extends \Application\Base\Model
         $ret = false;
         
         if($val !== null && sizeof($array) > 0){
-            $validator = new \Zend\Validator\InArray($array);
+            $validator = new \Zend\Validator\InArray(array('haystack' => $array));
             
             if($validator->isValid($val)){
                 $ret = true;

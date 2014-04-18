@@ -10,26 +10,27 @@
             $this->headLink(array(
                          'rel' => 'shortcut icon', 
                          'type' => 'image/png', 
-                         'href' => $this->basePath() . '/img/favicon.png'
+                         'href' => $this->basePath() . '/image/favicon.png'
                   ))
                   ->appendStylesheet($this->basePath() . '/css/bootstrap.min.css')
                   ->appendStylesheet($this->basePath() . '/css/style.css')
                   ->appendStylesheet($this->basePath() . '/css/bootstrap-responsive.min.css')
                   ->appendStylesheet($this->basePath() . '/css/bootstrap-select.min.css')
                   ->appendStylesheet($this->basePath() . '/css/bootstrap-formhelpers.css')
-                  ->appendStylesheet($this->basePath() . '/css/lightbox.css'); 
+                  ->appendStylesheet($this->basePath() . '/css/lightbox.css');
 
             $this->headScript()
-                 ->appendFile($this->basePath() . '/js/libs/jquery-1.10.2.min.js')
-                 ->appendFile($this->basePath() . '/js/libs/modernizr-2.6.2.min.js') 
+                 ->appendFile($this->basePath() . '/js/libs/jquery-1.9.0.min.js')
+                 ->appendFile($this->basePath() . '/js/libs/raphael.js')
+                 ->appendFile($this->basePath() . '/js/libs/raphyCharts.js')
+                 ->appendFile($this->basePath() . '/js/libs/modernizr-2.6.2.min.js')
                  ->appendFile($this->basePath() . '/js/libs/lightbox-2.6.min.js') 
-                 ->appendFile($this->basePath() . '/js/jquery.main.js') 
-                 ->appendFile($this->basePath() . '/js/bootstrap.min.js')
+                 ->appendFile($this->basePath() . '/js/libs/bootstrap.min.js')
                  ->appendFile($this->basePath() . '/js/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
                  ->appendFile($this->basePath() . '/js/tinymce/jquery.tinymce.min.js')
                  ->appendFile($this->basePath() . '/js/libs/bootstrap-select.min.js')
                  ->appendFile($this->basePath() . '/js/libs/bootstrap-formhelpers-phone.js')
-                 ->appendFile($this->basePath() . '/js/default.js');
+                 ->appendFile($this->basePath() . '/js/default.js'); 
 
             $this->mediaLoader();
             
@@ -40,7 +41,7 @@
     <body>
         <?php echo($this->partial('admin/layout/header')); ?>
         <div class="container-fluid">
-            <?php if(isset($_SESSION['admin']->auth['id'])){ ?>
+            <?php if($this->session('admin')->authId !== null){ ?>
                 <div class="row-fluid">
                     <div class="span2">
                       <?php echo($this->partial('admin-partials/sidebar-nav.phtml')); ?>

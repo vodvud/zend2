@@ -1,16 +1,13 @@
-<?php 
-    $parentParam = (preg_match('/^places-/', $this->routeNames('controller')) ? 'place' : 'car')
-?>
 <div class="phone-box">
-    <label class="control-label">Телефон</label>
+    <label class="control-label">Телефон <span class="star-phone" style="display: none">*</span> </label>
     <?php if(isset($getPhone) && is_array($getPhone)){ ?>
         <div class="control-group">        
             <div class="controls">
             <?php foreach($getPhone as $item){ ?>
-                <div class="row-fluid">            
+                <div class="row-fluid phone-row">            
                     <?php echo($item['phone']); ?>
                     &nbsp;&nbsp;
-                    <a href="<?php echo($this->easyUrl(array('action' => 'remove-phone', $parentParam => $getEdit['id'], 'id' => $item['id']))) ?>" class="icon-remove phone-remove-item" title="удалить"></a>
+                    <a href="<?php echo($this->easyUrl(array('action' => 'remove-phone', 'advert' => $getEdit['id'], 'id' => $item['id']))) ?>" class="icon-remove phone-remove-item" title="удалить"></a>
                 </div>
             <?php } ?>
             </div>
@@ -31,5 +28,5 @@
 </div>
 <div class="control-group">
     <input type="hidden" class="phone-item-data" data-phone-mask="<?php echo(isset($phoneMask) ? $phoneMask : ''); ?>" data-phone-placeholder="<?php echo(isset($phonePlaceholder) ? $phonePlaceholder : ''); ?>">
-    <button class="btn btn-success btn-small phone-add-item"><i class="icon-white icon-plus"></i> добавить поле</button>
+    <a class="btn btn-success btn-small phone-add-item"><i class="icon-white icon-plus"></i> добавить поле</a>
 </div>

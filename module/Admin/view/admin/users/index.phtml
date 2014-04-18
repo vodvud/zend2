@@ -7,7 +7,8 @@
                     <th>Дата</th>
                     <th>Имя</th>
                     <th>Логин</th>
-                    <th>Звезд</th>
+                    <th>Счет</th>
+                    <th class="status-box">Статус</th>
                     <th class="action-box"></th>
                 </tr>
             </thead>
@@ -16,7 +17,16 @@
                 <td><?php echo($item['date']); ?></td>
                 <td><?php echo($item['name']); ?></td>
                 <td><?php echo($item['username']); ?></td>
-                <td><?php echo((int)$item['star']); ?></td>
+                <td><?php echo((int)$item['balance']); ?></td>
+                <td class="status-box">
+                  <a href="<?php echo($this->easyUrl(array('action' => 'status', 'id' => $item['id']), array(), true)) ?>" title="сменить статус">
+                    <?php if($item['status']=='y'){ ?>
+                        <span class="label label-success">Активный</span>
+                    <?php }else{ ?>
+                        <span class="label label-important">Неактивный</span>
+                    <?php } ?>
+                  </a>
+                </td>
                 <td class="action-box">
                    <a href="<?php echo($this->easyUrl(array('action' => 'edit', 'id' => $item['id']))) ?>" class="icon-edit" title="редактировать"></a>
                    <a href="<?php echo($this->easyUrl(array('action' => 'remove', 'id' => $item['id']))) ?>" class="icon-remove confirm-remove" title="удалить"></a>

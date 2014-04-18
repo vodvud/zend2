@@ -4,3 +4,11 @@
  *  /admin/users/*
  */
 
+.control-group p {
+    display:none;
+}
+
+.control-group.error p {
+    display: block; 
+    color: red;
+}

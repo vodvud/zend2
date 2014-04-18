@@ -1,133 +1,66 @@
 <?php
 namespace Application\Model;
 
-class Testimonials extends \Application\Base\Model
-{
-    const POST_PER_PAGE = 10;
-
-    private function getSQL(){
-        $this->log(__CLASS__ . '\\' . __FUNCTION__);
-
-        $select = $this->select()
-                       ->from(array('t' => self::TABLE_TESTIMONIALS))
-                       ->columns(array())
-                       ->where(array('t.is_verified' => 'y'));
-
-        return $select;
-    }
-
+class Testimonials extends \Application\Base\Model {
+    
     /**
      * 
      * @param array $params
-     * @return bool
+     * @return boolean
      */
-    public function add($params, $car_params = array()){
+    public function add($params = null){
         $this->log(__CLASS__.'\\'.__FUNCTION__);
         
         $ret = false;
-        
-        if($params !== null){
-            $params['is_verified'] = 'n';
+
+        if($params !== null) {
+            
+            $advert_id = 0;
+            
+            if(isset($params['advert_id'])){
+                $advert_id = $params['advert_id'];
+                unset($params['advert_id']);
+            }
+            
             $params['timestamp'] = $this->load('Date', 'admin')->getDateTime();
             $insert = $this->insert(self::TABLE_TESTIMONIALS)
                            ->values($params);
+            
+            $ret = $this->execute($insert);
+            
+            
+            $id = $this->insertId();
+            
+            if ((int)$advert_id > 0 && $id > 0) {
+                $param = array(
+                    'testimonial_id' => $id,
+                    'advert_id' => $advert_id
+                );
+ 
+                $this->addToLinkedTable($param);
+            }
+        }
 
+        return (bool)$ret;
+    }
+    
+    /**
+     * Add testimonial to advert
+     * @param array $params
+     * @return boolean
+     */
+    public function addToLinkedTable($params = null) {
+        $this->log(__CLASS__ . '\\' . __FUNCTION__);
+        
+        $ret = false;
+        
+        if($params !== null) {
+            $insert = $this->insert(self::TABLE_TESTIMONIALS_TO_ADVERT)
+                           ->values($params);
+            
             $ret = $this->execute($insert);
         }
         
         return (bool)$ret;
-    }
-
-    /**
-     * Get all
-     * @param int $page
-     * @return null|array
-     */
-    public function getAll($page = 0){
-        $this->log(__CLASS__.'\\'.__FUNCTION__);
-
-        $result = null;
-        $select = $this->getSQL();
-
-        if($select instanceof \Zend\Db\Sql\Select){            
-            $select->columns(array(
-                    'id',
-                    'name',
-                    'email',
-                    'comment',
-                    'date' => $this->expr('date_format(t.timestamp, "%e %M %Y %H:%s")')
-                ))
-                ->order('timestamp desc');
-
-            if($page != 0){
-                $select->limitPage($page, self::POST_PER_PAGE);
-            }
-
-            $result = $this->fetchSelect($select);
-
-            foreach($result as &$item){
-
-                $item['date'] = $this->load('Date', 'admin')->translateMonth($item['date']);
-            }
-        }
-
-
-        return $result;
-    }
-
-    /**
-     * Get last
-     * @param int $limit
-     * @return null|array
-     */
-    public function getLast($limit = 3){
-        $this->log(__CLASS__.'\\'.__FUNCTION__);
-        
-        $result = null;
-        $select = $this->getSQL();
-
-        if($select instanceof \Zend\Db\Sql\Select){            
-            $select->columns(array(
-                    'id',
-                    'name',
-                    'comment',
-                    'date' => $this->expr('date_format(timestamp, "%e %M %Y")')
-                ))
-                ->order('timestamp desc')
-                ->limit($limit);
-
-            $result = $this->fetchSelect($select);
-
-            foreach($result as &$item){
-
-                $item['date'] = $this->load('Date', 'admin')->translateMonth($item['date']);
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * get paginator
-     * @param int $page
-     * @return null|array
-     */
-    public function getPaginator($page = 0){
-        $this->log(__CLASS__ . '\\' . __FUNCTION__);
-
-        $count = 0;
-        $page = ((int)$page > 0) ? (int)$page : 1;
-
-        $select = $this->getSQL();
-
-        if($select instanceof \Zend\Db\Sql\Select){
-
-            $select->columns(array(
-                'count' => $this->expr('count(*)')
-            ));
-
-            $count = (int)$this->fetchOneSelect($select);
-        }
-        return $this->paginator($page, $count, self::POST_PER_PAGE);
     }
 }

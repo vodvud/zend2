@@ -24,7 +24,8 @@ class UsersController extends \Admin\Base\Controller
                 'username' => $this->p_string('username'),
                 'password' => $this->p_string('password'),
                 'retry_password' => $this->p_string('retry_password'),
-                'star' => $this->p_int('star'),
+                'balance' => $this->p_int('balance'),
+                'status' => $this->p_select('status', 'n', array('y', 'n'))
             );
             
             $arrays = array(
@@ -63,6 +64,16 @@ class UsersController extends \Admin\Base\Controller
         );
     }
     
+    public function statusAction(){
+        $this->log(__CLASS__ . '\\' . __FUNCTION__);
+
+        $this->load('Users', 'admin')->setStatus($this->p_int('id'));
+        
+        return $this->redirect()->toUrl(
+            $this->easyUrl(array('action'=>'index', 'id' => null), array(), true)
+        );
+    }
+    
     public function removePhoneAction(){
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
         
@@ -81,7 +92,7 @@ class UsersController extends \Admin\Base\Controller
             'username' => $this->p_string('username'),
             'password' => $this->p_string('password'),
             'retry_password' => $this->p_string('retry_password'),
-            'star' => $this->p_string('star'),
+            'balance' => $this->p_string('balance'),
             'phoneArray' => $this->p_array('phoneArray'),
         );
         
@@ -119,13 +130,13 @@ class UsersController extends \Admin\Base\Controller
             }
         }
         
-        $validItem = $this->load('Validator')->validStringLength($params['star'], 1, 4);
+        $validItem = $this->load('Validator')->validStringLength($params['balance'], 1, 9);
         if($validItem == false){
-            $error['star'] = $validItem;
+            $error['balance'] = $validItem;
         }else{
-            $validItem = $this->load('Validator')->validDigits($params['star']);
+            $validItem = $this->load('Validator')->validDigits($params['balance']);
             if($validItem == false){
-                $error['star'] = $validItem;
+                $error['balance'] = $validItem;
             }
         }
         

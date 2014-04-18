@@ -6,38 +6,67 @@ class ForgotController extends \Profile\Base\Controller
     public function indexAction(){
         $this->log(__CLASS__.'\\'.__FUNCTION__); 
         
-        if(isset($this->session->auth['id'])){
+        if($this->session{'profile'}->authId !== null){
             return $this->redirect()
                          ->toUrl(
                              $this->easyUrl(array())
                          );
         }
         
+        $ret = array();
+        
         if($this->p_int('forgot-form') === 1){
             $params = array(
-                'username' => $this->p_string('username')
+                'username' => $this->p_string('username'),
+                'link' => $this->easyUrl(array('action' => 'confirm-recovery', 'key'=> '__KEY__'))
             );
             
             $check = $this->check($params);
             if($check['status'] == true){
-                $user = $this->load('Forgot', 'profile')->recover($params);
+                $user = $this->load('Forgot', 'profile')->confirmRecovery($params);
                 
                 if($user){
                     return $this->redirect()
                                  ->toUrl(
-                                     $this->easyUrl(array('action' => 'success'))
+                                     $this->easyUrl(array('action' => 'recover'))
                                  );
                 }
             }
         }
+        return $this->view($ret);
+    }
+    
+    public function confirmRecoveryAction() {
+        $key = $this->p_string('key');
         
-        return $this->redirect()
-                     ->toUrl(
-                         $this->easyUrl(array('controller' => 'error', 'action' => 'forgot'))
-                     );
+        $user = $this->load('Forgot', 'profile')->getUserByKey($key);
+        
+        $params = array(
+            'username' => $user['username']
+        );
+        $user = $this->load('Forgot', 'profile')->recover($params);
+            if($user){
+                return $this->redirect()
+                             ->toUrl(
+                                 $this->easyUrl(array('action' => 'success'))
+                             );
+            } else {
+                return $this->redirect()
+                             ->toUrl(
+                 $this->easyUrl(array('action' => 'error'))
+             );
+            }   
     }
     
     public function successAction(){
+        $this->log(__CLASS__.'\\'.__FUNCTION__); 
+        
+        $ret = array();
+        
+        return $this->view($ret);
+    }
+    
+    public function recoverAction(){
         $this->log(__CLASS__.'\\'.__FUNCTION__); 
         
         $ret = array();
@@ -75,9 +104,15 @@ class ForgotController extends \Profile\Base\Controller
             $validItem = $this->load('Validator')->validEmail($params['username']);
             if($validItem == false){
                 $error['username'] = $validItem;
+            }else{
+                $validItem = $this->load('User', 'profile')->checkLogin($params['username']);
+                if($validItem == false){
+                    $error['username'] = false;
+                    $error['username_taken'] = false;
+                }
             }
         }
-        
+
         $ret = array(
             'status' => (sizeof($error) > 0 ? false : true),
             'error' => $error

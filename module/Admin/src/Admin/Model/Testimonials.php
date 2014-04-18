@@ -1,138 +1,120 @@
 <?php
 namespace Admin\Model;
 
-class Testimonials extends \Application\Base\Model
-{
-    const POST_PER_PAGE = 20;
+class Testimonials extends \Application\Base\Model {
     
-    /**
-     * Get all list
-     * @param int $page
-     * @return null|array
-     */
-    public function getList($page = 0){
+    const POST_PER_PAGE = 20;
+
+    public static $typeNames = array(
+        'grate' => 'Благодарность',
+        'advice' => 'Предложение',
+        'complaint' => 'Жалоба',
+        'advert' => 'Объявление: Отзыв'
+    );
+    
+    public function getSQL() {
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
         
-        $ret = null;
-
         $select = $this->select()
                        ->from(self::TABLE_TESTIMONIALS)
                        ->columns(array(
-                           'id',
-                           'name',
-                           'email',
-                           'comment',
-                           'is_verified',
-                           'date' => $this->expr('date_format(timestamp, "%d.%m.%Y %H:%i")')
-                       ))
-                       ->order('is_verified desc')
-                       ->order('timestamp desc');
+                            'id',
+                            'name',
+                            'email',
+                            'message',
+                            'rating',
+                            'type',
+                            'active',
+                            'date' => $this->expr('date_format(timestamp, "%d.%m.%Y %H:%i")')
+                        ))
+                        ->order('timestamp desc');
         
-        if($page > 0){
-            $select->limitPage($page, self::POST_PER_PAGE);
+        return $select;
+    }
+
+    /**
+     * Get all list
+     * @return null|array
+     */
+    public function getList($params){
+        $this->log(__CLASS__ . '\\' . __FUNCTION__);
+
+        $ret = null;
+        $select = $this->getSQL();
+
+        if(isset($params['type']) && !empty($params['type'])) {
+            $select->where(array('type' => $params['type']));
+        }
+        
+        if(isset($params['page'])){
+            $select->limitPage($params['page'], self::POST_PER_PAGE);
         }
 
         $result = $this->fetchSelect($select);
-
-        if($result){               
-           $ret = $result; 
+        
+        if($result){
+            foreach ($result as $key=>$value) {
+                $result[$key]['type_tr'] = $this->getTypeName($value['type']);
+            }
+            $ret = $result;
         }
 
         return $ret;
     }
     
     /**
-     * Get one
-     * @param int $id
+     * get paginator
+     * @param array $params search params
      * @return null|array
      */
-    public function getOne($id = 0){
+    public function getPaginator($params = array()){
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
         
-        $ret = null;
-
-        if($id > 0){                
-            $select = $this->select()
-                           ->from(self::TABLE_TESTIMONIALS)
-                           ->columns(array(
-                                'id',
-                                'name',
-                                'email',
-                                'comment',
-                                'is_verified'
-                           ))
-                           ->where(array('id' => $id))
-                           ->limit(1);
-
-            $result = $this->fetchRowSelect($select);
-
-            if($result){
-               $ret = $result; 
-            }
-        }
+        $count = 0;
+        $page = isset($params['page']) ? $params['page'] : 1; 
         
-        return $ret;
-    }    
+        $select = $this->getSQL();
+        
+        if(isset($params['type']) && $params['type'] !== '') {
+            $select->where(array('type' => $params['type']));
+        }
+            
+        $select->columns(array(
+                    'count' => $this->expr('count(*)')
+               ));
+            
+        $count = (int)$this->fetchOneSelect($select);
+
+        return $this->paginator($page, $count, self::POST_PER_PAGE);
+    }
+    
     
     /**
-     * Edit
-     * @param int $id
+     * Edit testimonial
+     * @param integer $id
      * @param array $params
-     * @return bool
+     * @return boolean
      */
-    public function edit($id = 0, $params = null){
+    public function edit($id = 0, $params = null) {
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
         
         $ret = false;
         
-        if($id > 0 && $params !== null){ 
+        if($id > 0 && $params !== null) {
             $update = $this->update(self::TABLE_TESTIMONIALS)
                            ->set($params)
                            ->where(array('id' => $id));
-
+            
             $ret = $this->execute($update);
         }
-        
+          
         return (bool)$ret;
     }
     
     /**
-     * Set status
-     * @param int $id
-     * @return bool
-     */
-    public function setStatus($id = 0){
-        $this->log(__CLASS__ . '\\' . __FUNCTION__);
-        
-        $ret = false;
-        
-        if($id > 0){            
-            $select = $this->select()
-                           ->from(self::TABLE_TESTIMONIALS)
-                           ->columns(array('is_verified' ))
-                           ->where(array('id' => $id))
-                           ->limit(1);
-            
-            $status = $this->fetchOneSelect($select);
-            
-            if($status){                
-                $update = $this->update(self::TABLE_TESTIMONIALS)
-                               ->set(array(
-                                   'is_verified' => ($status == 'y' ? 'n' : 'y')
-                               ))
-                               ->where(array('id' => $id));
-                
-                $ret = $this->execute($update);
-            }
-        }
-       
-       return (bool)$ret;
-    }
-    
-    /**
      * Remove
-     * @param int $id
-     * @return bool
+     * @param integer $id
+     * @return boolean
      */
     public function remove($id = 0){
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
@@ -148,26 +130,59 @@ class Testimonials extends \Application\Base\Model
         
         return (bool)$ret;
     }
-
+    
     /**
-     * get paginator
-     * @param int $page
-     * @return null|array
+     * Get one testimonial record
+     * @param integer $id
+     * @return array|null
      */
-    public function getPaginator($page = 0){
+    public function getOne($id = 0) {
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
+        
+        $select = $this->getSQL();
+        
+        $select->where(array(
+            'id' => $id
+        ))
+                ->limit(1);
+        
+        $result = $this->fetchRowSelect($select);
+        
+        return $result;
+    }
+    
+    public function setTestimonialStatus($id = 0) {
+        $this->log(__CLASS__ . '\\' . __FUNCTION__);
+        
+        if((int)$id > 0) {
+        
+            $select = $this->select()
+                   ->from(self::TABLE_TESTIMONIALS)
+                   ->columns(array(
+                        'active'
+                    ))
+                   ->where(array('id' => $id))
+                   ->limit(1);
 
-        $count = 0;
-        $page = ($page > 0) ? $page : 1;
+            $active = $this->fetchOneSelect($select);
 
-        $select = $this->select()
-                       ->from(self::TABLE_TESTIMONIALS)
-                       ->columns(array(
-                           'count' => $this->expr('count(*)')
-                       ));
+            if(isset($active)) {
+                $update = $this->update(self::TABLE_TESTIMONIALS)
+                               ->set(array(
+                                     'active' => ($active == 'y' ? 'n' : 'y')
+                                     ))
+                               ->where(array('id' => $id));
+                }
+        }
+        $ret = $this->execute($update); 
+    }
+    
+    
+    public function getTypeName($type = null) {
 
-        $count = (int)$this->fetchOneSelect($select);
-
-        return $this->paginator($page, $count, self::POST_PER_PAGE);
+        if(isset($type)) {
+            return self::$typeNames[$type];
+        }
     }
 }
+

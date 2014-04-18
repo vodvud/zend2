@@ -6,6 +6,7 @@ class Users extends \Application\Base\Model
     const USERS_PER_PAGE = 20;
     
     private static $userLevel = array();
+    private static $nameAndUsername = array();
 
     /**
      * Get user list
@@ -23,7 +24,8 @@ class Users extends \Application\Base\Model
                            'id',
                            'username',
                            'name',
-                           'star',
+                           'balance',
+                           'status',
                            'date' => $this->expr('date_format(u.timestamp, "%d.%m.%Y %H:%i")')
                        ))
                        ->where(array(
@@ -88,7 +90,8 @@ class Users extends \Application\Base\Model
                                 'id',
                                 'username',
                                 'name',
-                                'star',
+                                'balance',
+                                'status'
                            ))
                            ->where(array(
                                'u.id' => $id,
@@ -159,6 +162,52 @@ class Users extends \Application\Base\Model
         
         return $ret;
     }
+    
+    /**
+     * Get User Name and Username
+     * @param int $id User ID
+     * @return array
+     */
+    public function getNameAndUsername($id = 0){
+        $this->log(__CLASS__ . '\\' . __FUNCTION__);
+        
+        if(isset(self::$nameAndUsername[$id])){
+            $ret = self::$nameAndUsername[$id];
+        }else{            
+            $ret = array(
+                'readonly' => '',
+                'name' => '',
+                'username' => ''
+            );
+
+                if($id > 0){
+                    $select = $this->select()
+                                   ->from(self::TABLE_USER)
+                                   ->columns(array(
+                                       'name',
+                                       'username'))
+                                   ->where(array('id' => $id))
+                                   ->limit(1);
+
+                    $result = $this->fetchRowSelect($select);
+
+                    if ($result) {
+                        $result['readonly'] = ' readonly="readonly"';
+                        if ($result['name'] == '') {
+                            $result['readonly'] = '';
+                        }
+                        $ret = $result;
+                    }
+                }
+                
+            self::$nameAndUsername[$id] = $ret;
+        }
+        
+        
+        return $ret;
+    }
+    
+    
     
     /**
      * Get User Level
@@ -252,14 +301,15 @@ class Users extends \Application\Base\Model
                 $set = array(
                     'username' => $params['username'],
                     'name' => isset($params['name']) ? $params['name'] : '',
-                    'star' => isset($params['star']) ? $params['star'] : 0
+                    'balance' => isset($params['balance']) ? $params['balance'] : 0,
+                    'status' => isset($params['status']) ? $params['status'] : 'n'                    
                 );
 
                 $select = $this->select()
                     ->from(self::TABLE_USER)
-                    ->columns(array('star' => 'star'))
+                    ->columns(array('balance' => 'balance'))
                     ->where(array('id' => $id));
-                $oldStars = self::fetchOneSelect($select);
+                $oldBalance = self::fetchOneSelect($select);
 
                 if(
                     isset($params['password']) && 
@@ -279,9 +329,9 @@ class Users extends \Application\Base\Model
                 $ret = $this->execute($update);
 
                 if ($ret){
-                    $stars = $set['star'] - $oldStars;
-                    if ($stars > 0){
-                        $this->load('SendEmail', 'admin')->refill($set['username'], $stars);
+                    $balance = $set['balance'] - $oldBalance;
+                    if ($balance > 0){
+                        $this->load('SendEmail', 'admin')->refill($set['username'], $balance);
                     }
                 }
             }
@@ -338,5 +388,41 @@ class Users extends \Application\Base\Model
         $count = (int)$this->fetchOneSelect($select);
 
         return $this->paginator($page, $count, self::USERS_PER_PAGE);
+    }
+    
+    /**
+     * Set status
+     * @param int $id
+     * @return bool
+     */
+    public function setStatus($id = 0){
+        $this->log(__CLASS__ . '\\' . __FUNCTION__);
+        
+        $ret = false;
+        
+        if($id > 0){            
+            $select = $this->select()
+                           ->from(self::TABLE_USER)
+                           ->columns(array(
+                               'status',
+                               'level'
+                           ))
+                           ->where(array('id' => $id))
+                           ->limit(1);
+            
+            $result = $this->fetchRowSelect($select);
+            
+            if(isset($result['status']) && isset($result['level']) && $result['level'] == self::USERS_LEVEL_USER){                
+                $update = $this->update(self::TABLE_USER)
+                               ->set(array(
+                                   'status' => ($result['status'] == 'y' ? 'n' : 'y')
+                               ))
+                               ->where(array('id' => $id));
+                
+                $ret = $this->execute($update);
+            }
+        }
+       
+        return (bool)$ret;
     }
 }

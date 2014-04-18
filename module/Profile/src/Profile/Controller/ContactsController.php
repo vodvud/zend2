@@ -19,7 +19,7 @@ class ContactsController extends \Profile\Base\Controller
             'phonePlaceholder' => $this->load('Phone', 'admin')->getPlaceholder(),
             'phoneMaskArray' => $this->load('Phone', 'admin')->getMaskArray(),
         );        
-        
+
         return $this->view($ret);
     }
     
@@ -28,7 +28,7 @@ class ContactsController extends \Profile\Base\Controller
         
         if($this->p_int('contacts-form') === 1){
             $params = array(
-                'name' => $this->p_string('name'),
+                'name' => $this->p_string('person'),
             );
             
             $arrays = array(
@@ -40,11 +40,13 @@ class ContactsController extends \Profile\Base\Controller
                 'name' => $params['name'],
                 'phone' => $arrays['phone'],
             );
-            
             $check = $this->check($check_params);
             if($check['status'] == true){
                 $res = $this->load('Contacts', 'profile')->edit($params, $arrays, $this->getUserId());
-                if($res == true){                    
+                if($res == true){
+                    // update current user
+                    $this->setCurrentUser($this->load('Users', 'admin')->getNameAndUsername($this->getUserId()));
+                    
                     return $this->redirect()
                                  ->toUrl(
                                      $this->easyUrl(array('action' => 'success'))

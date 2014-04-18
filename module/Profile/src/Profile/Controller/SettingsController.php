@@ -20,8 +20,8 @@ class SettingsController extends \Profile\Base\Controller
     }
     
     public function editAction(){
-        $this->log(__CLASS__.'\\'.__FUNCTION__); 
-        
+        $this->log(__CLASS__.'\\'.__FUNCTION__);
+
         if($this->p_int('settings-form') === 1){
             $params = array(
                 'username' => $this->p_string('username'),
@@ -29,17 +29,26 @@ class SettingsController extends \Profile\Base\Controller
                 'password' => $this->p_string('password'),
                 'retry_password' => $this->p_string('retry_password')
             );
-            
+
             $check = $this->check($params);
+
             if($check['status'] == true){
-                $res = $this->load('User', 'profile')->edit($params, $this->getUserId());
-                if($res == true){
-                    $this->setUserNаme($params['username']);
-                    
+                $res = $this->load('User', 'profile')->edit($params, $this->getUserId(), $this);
+                if($res === true){
                     return $this->redirect()
                                  ->toUrl(
                                      $this->easyUrl(array('action' => 'success'))
                                  );
+                }else if($res === 'change-email'){
+                    return $this->redirect()
+                        ->toUrl(
+                            $this->easyUrl(array('action' => 'email-activate'))
+                        );
+                } else {
+                    return $this->redirect()
+                        ->toUrl(
+                            $this->easyUrl(array('action' => 'index'))
+                        );
                 }
             }
         }
@@ -56,6 +65,37 @@ class SettingsController extends \Profile\Base\Controller
         $ret = array();
         
         return $this->view($ret);
+    }
+
+    public function emailActivateAction(){
+        $this->log(__CLASS__.'\\'.__FUNCTION__);
+
+        $ret = array();
+
+        return $this->view($ret);
+    }
+
+    public function changeEmailAction(){
+        $this->log(__CLASS__.'\\'.__FUNCTION__);
+        $newEmail = $this->p_string('email');
+        $key = $this->p_string('key');
+
+        if ($newEmail !== null && $key !== null){
+            $change = $this->load('User', 'profile' )->changeEmail($newEmail, $key);
+            if ($change){
+                // update current user
+                $this->setUserNаme($newEmail);
+                $this->setCurrentUser($this->load('Users', 'admin')->getNameAndUsername($this->getUserId()));
+                return $this->redirect()
+                    ->toUrl(
+                        $this->easyUrl(array('action' => 'success'))
+                    );
+            }
+        }
+        return $this->redirect()
+            ->toUrl(
+                $this->easyUrl(array('action' => 'error'))
+            );
     }
     
     public function errorAction(){
@@ -81,7 +121,6 @@ class SettingsController extends \Profile\Base\Controller
         
         return $this->json($ret);
     }
-    
     
     /**
      * @param array $params

@@ -115,4 +115,61 @@ trait TraitDefault
         
         return $ret;
     } 
+    
+    /**
+     * Set Cookie
+     * @param string $name
+     * @param string $value
+     * @param string $expire
+     * @param string $path
+     * @param string $domain
+     * @param boolean $secure
+     * @param boolean $http_only
+     * @return boolean
+     */
+    public final function setCookie($name, $value = null, $expire = null, $path = null, $domain = null, $secure = false, $http_only = false){
+        return setcookie($name, $value, $expire, $path, $domain, $secure, $http_only);
+    }
+    
+    /**
+     * Get Cookie
+     * @param string $keyName
+     * @param mixed $default
+     * @return mixed
+     */
+    public final function getCookie($keyName, $default = null){
+        return isset($_COOKIE[$keyName]) ? $_COOKIE[$keyName] : $default;
+    }
+    
+    
+    /**
+     * Start session
+     */
+    public final function sessionStart(){
+        $expire = (60*60*4);
+        ini_set('session.cache_expire', $expire);
+        ini_set('session.gc_maxlifetime', $expire);
+        session_start();
+    }
+    
+    /**
+     * Get session status
+     * @return boolean
+     */
+    public final function sessionStatus(){
+        return (session_status() === PHP_SESSION_ACTIVE) ? true : false;
+    }
+    
+    /**
+     * Set value to session array
+     * @param string $storage (optional, default: 'application')
+     * @param string $name
+     * @param mixed $value
+     * @return mixed
+     * @example $this->session({storage})->{name}={value}; Set value
+     * @example $catalog=$this->session({storage})->{name}; Get value
+     */
+    public final function session($storage = 'application'){
+        return new \Base\Mvc\SessionClass($storage);
+    }
 }

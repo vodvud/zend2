@@ -21,7 +21,7 @@ return array(
         )
    ), 
    'site' => array(
-       'name' => 'My Site'
+       'name' => 'Uslugi.kz'
    ),
    'service_manager' => array(
       'factories' => array(

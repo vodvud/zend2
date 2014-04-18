@@ -11,8 +11,8 @@
         <input type="submit" value="Вход">
   </div>
   <div class="add-buttons">
-      <a class="btn-forgot-pass">Забыли пароль?</a>
-      <a class="btn-register">Регистрация</a>
+      <a href="<?php echo($this->easyUrl(array('module' => 'profile' ,'controller' => 'forgot'))); ?>" class="btn-forgot">Забыли пароль?</a>
+      <a href="<?php echo($this->easyUrl(array('module' => 'profile' ,'controller' => 'registration'))); ?>" class="btn-registration">Регистрация</a>
   </div>
   <input type="hidden" name="validator" value="<?php echo($this->easyUrl(array('module' => 'profile', 'controller' => 'login', 'action' => 'validator'))); ?>">
   <input type="hidden" name="login-form" value="0">

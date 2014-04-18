@@ -6,7 +6,7 @@ class AboutUsController extends \Application\Base\Controller
     public function __construct(){
         parent::__construct();
         
-        $this->pushTitle('О Нас');
+        $this->pushTitle('O проекте');
     }
     
     public function indexAction()

@@ -1,30 +1,31 @@
 <?php
 namespace Admin\Base;
 
-use Zend\Session\Container as SessionContainer;
 use Zend\Mvc\MvcEvent;
 
 class Controller extends \Base\Mvc\Controller
 {
-    protected $session = null;
-    
     /**
      * Init session
      */
     public function __construct(){
-        $this->session = new SessionContainer('admin');
+        $this->sessionStart();
+        
+        if ($this->session('admin')->catalog === null){
+            $this->session('admin')->catalog = 'all';
+        }        
     }
-    
+
     /**
      * Check for login
      * @param \Zend\Mvc\MvcEvent $e
      */
     public function onDispatch(MvcEvent $e){
-        if($this->session === null){
+        if($this->sessionStatus() === false){
             return new \Zend\Session\Exception\RuntimeException('Can\'t create session');
         }
-        
-        if(!isset($this->session->auth['id']) && $this->routeNames('controller') != 'login'){
+
+        if($this->session('admin')->authId === null && $this->routeNames('controller') != 'login'){
             return $this->redirect()
                          ->toUrl(
                              $this->easyUrl(array('controller' => 'login'))
@@ -33,12 +34,12 @@ class Controller extends \Base\Mvc\Controller
 
         return parent::onDispatch($e);
     }
-    
+
     protected function getUserId(){
-        return isset($this->session->auth['id']) ? $this->session->auth['id'] : null;
+        return ($this->session('admin')->authId !== null) ? $this->session('admin')->authId : 0;
     }
     
     protected function getUserNаme(){
-        return isset($this->session->auth['username']) ? $this->session->auth['username'] : null;
+        return $this->session('admin')->authUsername;
     }
 }

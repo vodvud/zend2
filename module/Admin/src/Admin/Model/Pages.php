@@ -16,11 +16,11 @@ class Pages extends \Application\Base\Model
         $ret = null;
 
         $select = $this->select()
-            ->from(self::TABLE_PAGES)
-            ->columns(array(
-                'id',
-                'title',
-            ));
+                       ->from(self::TABLE_PAGES)
+                       ->columns(array(
+                           'id',
+                           'title',
+                       ));
 
         $result = $this->fetchSelect($select);
 
@@ -33,7 +33,7 @@ class Pages extends \Application\Base\Model
 
     /**
      * Get one
-     * @param int $id
+     * @param integer $id
      * @return null|array
      */
     public function getOne($id = 0){
@@ -43,15 +43,14 @@ class Pages extends \Application\Base\Model
 
         if($id > 0){
             $select = $this->select()
-                ->from(self::TABLE_PAGES)
-                ->columns(array(
-                    'id',
-                    'title',
-                    'content1',
-                    'content2'
-                ))
-                ->where(array('id' => $id))
-                ->limit(1);
+                           ->from(self::TABLE_PAGES)
+                           ->columns(array(
+                               'id',
+                               'title',
+                               'content'
+                           ))
+                           ->where(array('id' => $id))
+                           ->limit(1);
 
             $result = $this->fetchRowSelect($select);
 
@@ -65,20 +64,20 @@ class Pages extends \Application\Base\Model
 
     /**
      * Edit
-     * @param int $id
+     * @param integer $id
      * @param array $params
-     * @return bool
+     * @return boolean
      */
     public function edit($id = 0, $params = null){
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
 
         $ret = false;
 
-        if($id > 0 && $params !== null){
+        if((int)$id > 0 && $params !== null){
 
             $update = $this->update(self::TABLE_PAGES)
-                ->set($params)
-                ->where(array('id' => $id));
+                           ->set($params)
+                           ->where(array('id' => $id));
 
             $ret = $this->execute($update);
         }

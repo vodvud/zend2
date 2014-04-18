@@ -1,5 +1,2 @@
-/.idea*
-/taxi.access.log
-/taxi.error.log
-
-
+/.idea/*
+/public/.idea/*

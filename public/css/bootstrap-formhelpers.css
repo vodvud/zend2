@@ -108,7 +108,7 @@
 .bfh-googlefonts .bfh-selectbox-options a {
   height: 30px;
   text-indent: -9999px;
-  background-image: url(../img/bootstrap-formhelpers-googlefonts.png);
+  background-image: url(../images/bootstrap-formhelpers-googlefonts.png);
 }
 
 .bfh-selectbox-options li > a:focus {
@@ -126,7 +126,7 @@
 }
 
 .bfh-googlefonts .bfh-selectbox-options li > a:focus {
-  background-image: url(../img/bootstrap-formhelpers-googlefonts.png);
+  background-image: url(../images/bootstrap-formhelpers-googlefonts.png);
   background-repeat: no-repeat;
   filter: none;
   background-color: transparent;
@@ -152,7 +152,7 @@
 
 .bfh-googlefonts .bfh-selectbox-options .active > a,
 .bfh-googlefonts .bfh-selectbox-options .active > a:hover {
-  background-image: url(../img/bootstrap-formhelpers-googlefonts.png);
+  background-image: url(../images/bootstrap-formhelpers-googlefonts.png);
   background-repeat: no-repeat;
   filter: none;
   background-color: transparent;

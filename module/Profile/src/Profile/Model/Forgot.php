@@ -32,7 +32,8 @@ class Forgot extends \Application\Base\Model
                 $update = $this->update(self::TABLE_USER)
                                ->set(array(
                                    'password' => $this->expr('md5(?)', $newPassword.$salt),
-                                   'salt' => $salt
+                                   'salt' => $salt,
+                                   'key' => $this->expr('md5(?)', $params['username'].$salt)
                                ))
                                ->where(array(
                                    'id' => $userId,
@@ -49,5 +50,69 @@ class Forgot extends \Application\Base\Model
         }
         
         return $ret;
+    }
+    
+    /**
+     * Recover User
+     * @param array $params
+     * @return bool
+     */
+    public function confirmRecovery($params = null){
+        $this->log(__CLASS__ . '\\' . __FUNCTION__);
+        
+        $ret = false;
+        
+        if(isset($params['username'])){
+            $select = $this->select()
+                           ->from(self::TABLE_USER)
+                           ->columns(array(
+                               'key'
+                               ))
+                           ->where(array(
+                               'username' => $params['username'],
+                               'level' => self::USERS_LEVEL_USER
+                           ))
+                           ->limit(1);
+            
+            $result = $this->fetchRowSelect($select);
+            
+            if($result){
+                $ret = true;
+                $this->load('SendEmail', 'admin')->recoveryConfirmation($params, $result['key'], $url);
+            }
+        }
+        
+        return $ret;
+    }
+    
+    /**
+     * Get username by key
+     * @param string $key
+     * @return string
+     */
+    public function getUserByKey($key = null) {
+        $this->log(__CLASS__ . '\\' . __FUNCTION__);
+        
+        $ret = null;
+        
+        $select = $this->select()
+                       ->from(self::TABLE_USER)
+                       ->columns(array(
+                           'id',
+                           'username'
+                           ))
+                       ->where(array(
+                           'key' => $key 
+                       ))
+                       ->limit(1);
+        
+        $result = $this->fetchRowSelect($select);
+            
+        if ($result) {
+            $ret = $result;
+        }
+        
+        return $ret;
+        
     }
 }

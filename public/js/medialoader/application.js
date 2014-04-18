@@ -3,24 +3,36 @@
  *  /*
  */
 
+/**
+ * Login processing function
+ * */
+
 var func_main = {
-    scrollToSearch: function(){
-        main_scrollToSearch();
+    action: function(){
+        application_catalog_createCitiesSelect();
     },
-    scrollToTestimonialsForm: function(){
-        main_scrollToForm();
+    link: function(){
+        adverts_searchButton();
+        adverts_favoritesButton();
     },
     validator: function(){
         profile_login_formValidator();
-        profile_registration_formValidator();
-        profile_forgot_formValidator();
+//        profile_registration_formValidator();
+//        profile_forgot_formValidator();
     },
-    add: function(){
-        testimonials_SubmitComment();
+    load: function(){
+        resetErrorStyle();
+        catalog_refreshJcf();
+        application_search_getPhoneNumber();
+        application_catalog_createHtmlSelectCity();
+        numbersOnly();
     },
     init: function(){
-        this.add();
         this.validator();
+        this.link();
+        this.action();
+        this.load();
+
     }
 }
 
@@ -29,57 +41,80 @@ $(document).ready(function(){
     func_main.init();
 });
 
-function main_scrollToSearch(){
-    var top = $('#search-result').offset().top;
-    $('html, body').animate({scrollTop : top},'slow');
+/**
+ * @param object form
+ */
+function application_removeErrors(form){
+    $(form).find('.error').removeClass('error');
 }
 
-function main_scrollToForm(){
-    var top = $('#testimonialsForm').offset().top;
-    $('html, body').animate({scrollTop : top},'slow');
+/**
+ * @param object form
+ * @param array data
+ */
+function application_createErrors(form, data) {
+    if ($(data.error).length > 0) {
+        for (var i in data.error) {
+            if (data.error[i] == false) {
+                var elem = $(form).find('[name="'+i+'"]');
+                if($(elem).attr('type') == 'checkbox'){
+                    $(elem).parent().addClass('error');
+                }else{
+                    $(elem).addClass('error');
+                }
+
+            }else if(data.error[i] == true && i == 'subscribe_email'){
+                $(form).find('[name="'+i+'"]').addClass('error');
+                alert('Этот email уже подписан на рассылку.');
+            }
+        }
+        var errorItem = $(form).find('.error:first').parent();
+        if ($(errorItem).length > 0) {
+            scrollingPage(errorItem, 10);
+        }
+    }
 }
 
-
-function profile_login_formValidator(){
-    bodyOffOn('submit', '.header .login-holder .popup.login-form', function(e){           
+ function profile_login_formValidator(){
+    bodyOffOn('submit', '.login-holder .popup_form.login-form', function(e){
         var form = $(this);
         var status = $(form).find('input[name="login-form"]');
-        
-        if($(status).val() == 0){            
+
+        console.log(status);
+        if($(status).val() == 0){
             e.preventDefault();
             var url = $(form).find('input[name="validator"]').val();
+
             var vals = {
                 username: $(form).find('input[name="username"]').val(),
-                password: $(form).find('input[name="password"]').val()
+                password: $(form).find('input[name="password"]').val(),
+                remember: $(form).find('input[name="remember"]:checked').val()
             }
 
             $(form).find('.row .error').removeClass('error');
-
             $.post(url, vals, function(data){
                 if(data.status == true){
                     $(status).val(1);
                     $(form).submit();
                 }else{
                     if($(data.error).length > 0){
-                        for(var i in data.error){                        
+                        for(var i in data.error){
                             if(data.error[i] == false){
                                 $(form).find('[name="'+i+'"]').addClass('error');
                             }
                         }
                     }
                 }
-            }); 
+            });
         }
-        
     });
 }
 
 function profile_registration_formValidator(){
-    bodyOffOn('submit', '.header .login-holder .popup.register', function(e){           
+    bodyOffOn('submit', '.header .login-holder .popup.register', function(e){
         var form = $(this);
         var status = $(form).find('input[name="registration-form"]');
-        
-        if($(status).val() == 0){            
+        if($(status).val() == 0){
             e.preventDefault();
             var url = $(form).find('input[name="validator"]').val();
             var vals = {
@@ -96,7 +131,7 @@ function profile_registration_formValidator(){
                     $(form).submit();
                 }else{
                     if($(data.error).length > 0){
-                        for(var i in data.error){                        
+                        for(var i in data.error){
                             if(data.error[i] == false){
                                 $(form).find('[name="'+i+'"]').addClass('error');
                             }else if(data.error[i] == true && i == 'username'){
@@ -106,18 +141,18 @@ function profile_registration_formValidator(){
                         }
                     }
                 }
-            }); 
+            });
         }
-        
+
     });
 }
 
 function profile_forgot_formValidator(){
-    bodyOffOn('submit', '.header .login-holder .popup.forgot', function(e){           
+    bodyOffOn('submit', '.header .login-holder .popup.forgot', function(e){
         var form = $(this);
         var status = $(form).find('input[name="forgot-form"]');
-        
-        if($(status).val() == 0){            
+
+        if($(status).val() == 0){
             e.preventDefault();
             var url = $(form).find('input[name="validator"]').val();
             var vals = {
@@ -132,66 +167,128 @@ function profile_forgot_formValidator(){
                     $(form).submit();
                 }else{
                     if($(data.error).length > 0){
-                        for(var i in data.error){                        
+                        for(var i in data.error){
                             if(data.error[i] == false){
                                 $(form).find('[name="'+i+'"]').addClass('error');
                             }
                         }
                     }
                 }
-            }); 
+            });
         }
-        
+
     });
 }
 
-function testimonials_SubmitComment(){
-    bodyOffOn('submit', '.testimonial-form', function(e){
+function adverts_searchButton() {
+    bodyOffOn('click', 'form.srch .btn-search', function (e) {
         e.preventDefault();
-        var form = $(this);
-        var url = $(form).find('input[name="validator"]').val();
-        var vals = {
-            name: $(form).find('input[name="name"]').val(),
-            email: $(form).find('input[name="email"]').val(),
-            comment: $(form).find('textarea[name="comment"]').val(),
-            car_id: $(form).find('input[name="car_id"]').val(),
-            cat_url: $(form).find('input[name="cat_url"]').val(),
-            rate: $(form).find('input[name="rate"]').val()
+        var form = $(this).parents('form.srch');
+        $(form).submit();
+    });
+}
+
+/**
+ * Show phone
+ */
+function application_search_getPhoneNumber(){
+    bodyOffOn('click', '.article_bottom.group .links', function(e){
+        e.preventDefault();
+        var el = $(this);
+        var url = $(el).attr('href');
+        var article = $(el).parent('.article_bottom.group');
+        
+        $('.tel').not($(article).find('.tel')).removeClass('active');
+
+        if (!$(article.find('.tel')).hasClass('is-loaded')) {
+            $.post(url, null, function(data) {
+                if($(data.phone).length > 0){
+                    var html = '';
+                    $(data.phone).each(function(index, elem){
+                        html += '<span>' + elem.phone + ';</span>';
+                    });
+                    $(article).find('.phones').html(html);
+                }else{
+                    $(article).find('.phones').html('нет номера');
+                }
+                $(article).find('.tel').addClass('is-loaded');
+            });
         }
+    });
+}
 
-        $(form).find('.row.error-box').removeClass('error-box');
+/**
+ * Refresh jcf
+ */
+function catalog_refreshJcf() {
+    bodyOffOn('click', '.opener', function (e) {
+        e.preventDefault();
+        console.log('test');
+    });
+}
 
-        $.post(url, vals, function(data){
+/**
+ * Add to favorites
+ */
+function adverts_favoritesButton(){
+    bodyOffOn('click', '.favorites-button', function(e){
+        e.preventDefault();
+        var el = $(this);
+        var url = $(el).attr('data-url');
+
+        $.post(url, null, function(data){
             if(data.status == true){
-                testimonials_AddComment(form, vals);
-            }else{
-                if($(data.error).length > 0){
-                    for(var i in data.error){
-                        if(data.error[i] == false){
-                            $(form).find('[name="'+i+'"]').parent('.row').addClass('error-box');
-                        }
-                    }
+                $(el).attr('data-url', data.url).attr('title', data.text);
+
+                if(data.addClass == true){
+                    $(el).addClass('full');
+                }else{
+                    $(el).removeClass('full');
                 }
             }
         });
     });
 }
 
-function testimonials_AddComment(form, vals){
-    var url = $(form).attr('action');
-
-    $.post(url, vals, function(data){
-        if(data.status == true){
-            $(form).find('input[name="name"]').val('');
-            $(form).find('input[name="email"]').val('');
-            $(form).find('textarea[name="comment"]').val('');
-            $(form).find('input[name="car_id"]').val('');
-            $(form).find('input[name="cat_url"]').val('');
-            $(form).find('input[name="rate"]').val('');
-
-            alert('Спасибо, Ваш отзыв добавлен и отправлен на проверку.');
-        }else{
-            alert('Произошла серверная ошибка, попробуйте позже.');
-        }
+function application_catalog_createCitiesSelect(){
+    bodyOffOn('change', 'select[name="region"]', function(e){
+        e.preventDefault();
+        application_catalog_createHtmlSelectCity();
     });
+}
+
+function application_catalog_createHtmlSelectCity(){
+    var select = $('select[name="region"]');
+    var region = $(select).val();
+    var city = $('form.srch').find('input[name="location_city"]').val();
+    if(region > 0){
+        var url = $('form.srch').find('input[name="location_url"]').val();
+        var vals = {
+            region: region
+        };
+        
+        $.post(url, vals, function(data){
+            if (data.citiesList.length > 0){
+                $('#twn').html('');
+                var html = '';
+                html += '<option value="0">По всему региону</option>';
+                for (var i in data.citiesList){
+                    html += '<option '+((data.citiesList[i].id == city)?'selected="selected"': '')+' value="'+data.citiesList[i].id+'">'+data.citiesList[i].name+'</option>';
+                }
+                $('#twn').html(html);
+//                $('#twn')[0].jcf.buildDropdown();
+//                $('#twn')[0].jcf.refreshState();
+                jcf.customForms.destroyAll();
+                jcf.customForms.replaceAll();
+            }
+        });
+    } else {
+        $('#twn').html('');
+        var html = '<option value="0">Выберите регион</option>';
+        $('#twn').html(html);
+//        $('#twn')[0].jcf.buildDropdown();
+//        $('#twn')[0].jcf.refreshState();
+        jcf.customForms.destroyAll();
+        jcf.customForms.replaceAll();
+    }
 }

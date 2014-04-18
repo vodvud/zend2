@@ -1,30 +1,31 @@
 <?php
 namespace Profile\Base;
 
-use Zend\Session\Container as SessionContainer;
 use Zend\Mvc\MvcEvent;
 
 class Controller extends \Base\Mvc\Controller
-{
-    protected $session = null;    
+{    
     /**
      * Init session
      */
     public function __construct(){
-        $this->session = new SessionContainer('profile');
+        $this->sessionStart();
         
         $this->pushTitle('Личный кабинет');
-        
-        if(isset($this->session->auth['id'])){            
-            $this->session->star = $this->load('Wallet', 'profile')->get($this->getUserId());
-                      
-            $this->session->carsCount = 0;
+
+        if($this->getUserId() > 0){
+            $this->session('profile')->messages = $this->load('Messages', 'profile')->getCount($this->getUserId());
+            $this->session('profile')->balance = $this->load('Wallet', 'profile')->getBalance($this->getUserId());
         }
-        
+
+        if($this->session()->catalog === null){
+            $this->session()->catalog = 'uslugi';
+        }
+
         // add css and js
         $this->addHeadLink('/css/medialoader/application.css', false);
-        $this->addHeadScript('/js/tinymce/jquery.tinymce.min.js', false);
-        $this->addHeadScript('/js/libs/bootstrap-formhelpers-phone.js', false);
+        //$this->addHeadScript('/js/tinymce/jquery.tinymce.min.js', false);
+        //$this->addHeadScript('/js/libs/bootstrap-formhelpers-phone.js', false);
         $this->addHeadScript('/js/medialoader/application.js', false);
     }
     
@@ -33,15 +34,18 @@ class Controller extends \Base\Mvc\Controller
      * @param \Zend\Mvc\MvcEvent $e
      */
     public function onDispatch(MvcEvent $e){
-        if($this->session === null){
+        if($this->sessionStatus() === false){
             return new \Zend\Session\Exception\RuntimeException('Can\'t create session');
         }
         
-        if(!isset($this->session->auth['id']) && 
+        if($this->session('profile')->authId === null && 
             $this->routeNames('controller') != 'login' && 
             $this->routeNames('controller') != 'registration' && 
             $this->routeNames('controller') != 'forgot' && 
-            $this->routeNames('controller') != 'error'
+            $this->routeNames('controller') != 'error' &&
+            $this->routeNames('controller') != 'guest' &&
+            !($this->routeNames('controller') == 'wallet' && $this->routeNames('action') == 'postlink')
+
            ){
             return $this->redirect()
                          ->toUrl(
@@ -53,28 +57,27 @@ class Controller extends \Base\Mvc\Controller
     }
     
     /**
-     * Return $this->session->auth['id']
+     * Return authId
      * @return null|int
      */
     protected function getUserId(){
-        return isset($this->session->auth['id']) ? $this->session->auth['id'] : 0;
+        return ($this->session('profile')->authId !== null) ? $this->session('profile')->authId : 0;
     }
     
     /**
-     * Return $this->session->auth['username']
+     * Return authUsername
      * @return null|string
      */
     protected function getUserNаme(){
-        return isset($this->session->auth['username']) ? $this->session->auth['username'] : null;
+        return ($this->session('profile')->authUsername !== null) ? $this->session('profile')->authUsername : null;
     }
     
     /**
-     * @param int $id
+     * @param integer $id
      */
     protected function setUserId($id = 0){
         if((int)$id > 0){
-            $this->setAuth();
-            $this->session->auth['id'] = (int)$id;
+            $this->session('profile')->authId = (int)$id;
         }
     }
     
@@ -83,17 +86,17 @@ class Controller extends \Base\Mvc\Controller
      */
     protected function setUserNаme($username = null){
         if($username !== null){
-            $this->setAuth();
-            $this->session->auth['username'] = $username;
+            $this->session('profile')->authUsername = $username;
         }
     }
     
     /**
-     * Set auth
+     * @param array $user
      */
-    private function setAuth(){
-        if(!isset($this->session->auth)){
-            $this->session->auth = array();
+    protected function setCurrentUser($user = null){
+        if($user !== null){
+            $this->session('profile')->authCurrentUser = $user;
         }
     }
+
 }

@@ -27,6 +27,8 @@ var func_admin = {
     load: function(){
         admin_loadTinymce();
         admin_loadSelectpicker();
+        resetErrorStyle();
+        numbersOnly();
     },
     init: function(){
         this.add();
@@ -123,7 +125,7 @@ function admin_removeConfirm(){
         if(confirm('Подтвердите удаление')){
             return true;
         }else{
-            e.preventDefault();
+           e.preventDefault();
             return false;
         }
     });
@@ -322,7 +324,6 @@ function admin_pagesFormValidator(){
         }
     });
 }
-
 /********************/
 /* Validators (end) */
 /********************/

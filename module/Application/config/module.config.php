@@ -28,7 +28,7 @@ return array(
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'get_http_request_string' => '[a-zA-Z0-9][a-zA-Z0-9_\/-\\\.]*',
+                                'get_http_request_string' => '[a-zA-Z0-9][a-zA-Z0-9_\/\-\\\.]*',
                             ),
                             'defaults' => array(
                                 'action' => 'index',
@@ -42,10 +42,11 @@ return array(
     ),
     'view_manager' => array(
         'template_map' => array(
-            'application/index/index'    => __DIR__ . '/../view/application/index/index.phtml',
-            'application/layout'         => __DIR__ . '/../view/layout/layout.phtml',
-            'application/layout/header'  => __DIR__ . '/../view/layout/header.phtml',
-            'application/layout/footer'  => __DIR__ . '/../view/layout/footer.phtml',
+            'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
+            'application/layout' => __DIR__ . '/../view/layout/layout.phtml',
+            'application/layout/header' => __DIR__ . '/../view/layout/header.phtml',
+            'application/layout/footer' => __DIR__ . '/../view/layout/footer.phtml',
+            'application/layout/page-body' => __DIR__ . '/../view/layout/page-body.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',

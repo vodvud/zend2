@@ -1,23 +1,12 @@
 <?php if($getEdit){ ?>
-    <form class="form-validator edit" action="<?php echo($this->easyUrl(array('id' => $getEdit['id']))); ?>" method="post" enctype="multipart/form-data">
+    <form class="form-validator edit" action="<?php echo($this->easyUrl(array('id' => $getEdit['id']))); ?>" method="post">
         <fieldset>
             <legend><?php echo($getEdit['title']); ?></legend>
             <div class="control-group">
                 <label class="control-label">Текст</label>
                 <div class="controls">
-                    <textarea name="content1" class="textarea-fix-size span5 tinymce" maxlength="20000" placeholder="Введите текст…" rows="20"><?php echo($getEdit['content1']); ?></textarea>
+                    <textarea name="content" class="textarea-fix-size span5 tinymce" maxlength="20000" placeholder="Введите текст…" rows="20"><?php echo($getEdit['content']); ?></textarea>
                 </div>
-                <?php if ($getEdit['id'] == 3){?>
-                <label class="control-label">Текст</label>
-                <div class="controls">
-                    <textarea name="content2" class="textarea-fix-size span5 tinymce" maxlength="20000" placeholder="Введите текст…" rows="20"><?php echo($getEdit['content2']); ?></textarea>
-                </div>
-                <?php } elseif ($getEdit['id'] == 2){?>
-                    <label class="control-label">Координаты</label>
-                    <div class="controls">
-                        <textarea name="content2" class="textarea-fix-size span8" maxlength="20000" placeholder="Введите текст…" rows="20"><?php echo($getEdit['content2']); ?></textarea>
-                    </div>
-                <?php } ?>
             </div>
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Сохранить</button>

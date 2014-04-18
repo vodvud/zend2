@@ -19,7 +19,7 @@ $(document).ready(function(){
 });
 
 function admin_testimonials_editForm(){
-    bodyOffOn('submit', '.edit-form', function(e){
+    bodyOffOn('submit', '.testimonials-edit-form', function(e){
         var form = $(this);
         var edit = $(form).find('input[name="edit-form"]');
         
@@ -31,7 +31,7 @@ function admin_testimonials_editForm(){
             var vals = {
                 name: $(form).find('input[name="name"]').val(),
                 email: $(form).find('input[name="email"]').val(),
-                comment: $(form).find('textarea[name="comment"]').val()
+                message: $(form).find('textarea[name="message"]').val()
             };
 
             $.post(url, vals, function(data){

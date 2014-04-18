@@ -101,9 +101,16 @@ class Date extends \Application\Base\Model
     
     /**
      * Get data and time
+     * @param string $interval
      * @return date
      */
-    public function getDateTime(){
-        return date('Y-m-d H:i:s');
+    public function getDateTime($interval = null){
+        if($interval !== null){
+            $time = strtotime($interval, time());
+        }else{
+            $time = time();
+        }
+        
+        return date(self::MYSQL_DATETIME_FORMAT, $time);
     }
 }

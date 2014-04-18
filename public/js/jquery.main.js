@@ -1,292 +1,242 @@
+
 (function($) {
 	$(function(){
-		initLoginPopup();
+        ui_slider();
+        initCycleCarousel();
+        login();
+        telShow();
+        itemHeight();
+        navHeight();
+        mapInit();
+        scrollTo();
+
+        jcf.customForms.replaceAll();
+
+        jQuery('div.toggle-block').openClose({
+            addClassBeforeAnimation: true,
+            activeClass:'active',
+            opener:'.opener',
+            slider:'.slide',
+            animSpeed: 400,
+            effect:'fade',
+            event:'click'
+        });
 	});
 
-	// login popups init
-	function initLoginPopup() {
+    function initCycleCarousel() {
+        var sliderItem = $('div.item-gallery');
+        if(sliderItem.length>0){
+            sliderItem.scrollAbsoluteGallery({
+                mask: 'div.holder',
+                autoRotation: false,
+                switchTime: 3000,
+                maskAutoSize: false,
+                animSpeed: 500,
+                verticalThumbnails: true
+            });
+        }
+    }
 
-		function clearClasses() {
-			$('.login-holder').removeAttr('class').addClass('login-holder');
-		}
+    function scrollTo(){
+        var items = $('.goTo'),
+            page = $('body, html'),
+            animSpeed = 800;
 
-		$('html').on('click', function () {
-			if ( !$('.login-holder').hasClass('logged') ) {
-				clearClasses();
-			}
-		});
+        items.each(function(i){
+            var link = $(this),
+                target = $('#' + link.attr('href'));
+            link.on('click', function(e){
+                e.preventDefault();
+                page.animate({scrollTop: target.offset().top}, animSpeed);
+            });
+        });
+    }
 
-		$('.login-holder').on('click', function (e) {
-			e.stopPropagation();
-		});
+    function mapInit(){
+        $(function() {
 
-		$('.btn-login, .link-add.open-login-form').on('click', function() {
-            var el = $('.login-holder .btn-login');
-            
-			if ( !$(el).closest('.login-holder').hasClass('logged') ) {
-				if ( $(el).closest('.login-holder').hasClass('forgot-show') || $(this).closest('.login-holder').hasClass('register-show') ) {
-					$(el).closest('.login-holder').removeClass('forgot-show register-show');
-				}
-				else {
-					$(el).closest('.login-holder').removeClass('forgot-show register-show').toggleClass('login-show');
-				}
-				return false;
-			}
-		});
+            if($('#map-canvas').length>0){
+                function initialize() {
+                    var mapOptions = {
+                        center: new google.maps.LatLng(55.75, 37.625),
+                        zoom: 12,
+                        /*scrollwheel: false,*/
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };
+                    var map = new google.maps.Map(document.getElementById("map-canvas"),
+                        mapOptions);
 
-		$('.btn-forgot-pass').on('click', function() {
-			clearClasses();
-			$(this).closest('.login-holder').toggleClass('forgot-show');
-			return false;
-		});
+                    var activeClass = "full";
+                    $('#map-canvas').on('dblclick', function(){
 
-		$('.btn-register').on('click', function() {
-			clearClasses();
-			$(this).closest('.login-holder').toggleClass('register-show');
-			return false;
-		});
-	}
-    
-	/*
-	 * jQuery Tabs plugin
-	 */
-	;(function($){
-		$.fn.contentTabs = function(o){
-			// default options
-			var options = $.extend({
-				activeClass:'active',
-				addToParent:false,
-				autoHeight:false,
-				autoRotate:false,
-				checkHash:false,
-				animSpeed:400,
-				switchTime:3000,
-				effect: 'none', // "fade", "slide"
-				tabLinks:'a',
-				attrib:'href',
-				event:'click'
-			},o);
+                        if( $(this).hasClass(activeClass)){
+                            $(this).removeClass(activeClass);
+                        } else{
+                            $(this).addClass(activeClass);
+                            var currCenter = map.getCenter();
+                            google.maps.event.trigger(map, 'resize');
+                            map.setCenter(currCenter);
 
-			return this.each(function(){
-				var tabset = $(this), tabs = $();
-				var tabLinks = tabset.find(options.tabLinks);
-				var tabLinksParents = tabLinks.parent();
-				var prevActiveLink = tabLinks.eq(0), currentTab, animating;
-				var tabHolder;
+                        }
+                    });
+                }
+            google.maps.event.addDomListener(window, 'load', initialize);
+            }
+        });
+    }
 
-				// handle location hash
-				if(options.checkHash && tabLinks.filter('[' + options.attrib + '="' + location.hash + '"]').length) {
-					(options.addToParent ? tabLinksParents : tabLinks).removeClass(options.activeClass);
-					setTimeout(function() {
-						window.scrollTo(0,0);
-					},1);
-				}
+    function itemHeight(){
+        var post = $('.clickable');
+        if(post.length>0){
+            //post.attr('data-href', 'index.html');
+            post.off('click').on('click', function(){
+                window.location = this.getAttribute('data-href');
+            });
 
-				// init tabLinks
-				tabLinks.each(function(){
-					var link = $(this);
-					var href = link.attr(options.attrib);
-					var parent = link.parent();
-					href = href.substr(href.lastIndexOf('#'));
+            function change(){
+                var posts = $('.clickable').map(function () {
+                        return $(this).height();
+                    }).get(),
+                    maxHeight = Math.max.apply(null, posts);
+                post.height(maxHeight);
+            }
 
-					// get elements
-					var tab = $(href);
-					tabs = tabs.add(tab);
-					link.data('cparent', parent);
-					link.data('ctab', tab);
+            change();
 
-					// find tab holder
-					if(!tabHolder && tab.length) {
-						tabHolder = tab.parent();
-					}
+            $(window).off('resize').on('resize', function(){
+               change();
+            })
+        }
+    }
 
-					// show only active tab
-					var classOwner = options.addToParent ? parent : link;
-					if(classOwner.hasClass(options.activeClass) || (options.checkHash && location.hash === href)) {
-						classOwner.addClass(options.activeClass);
-						prevActiveLink = link; currentTab = tab;
-						tab.removeClass(tabHiddenClass).width('');
-						contentTabsEffect[options.effect].show({tab:tab, fast:true});
-					} else {
-						var tabWidth = tab.width();
-						if(tabWidth) {
-							tab.width(tabWidth);
-						}
-						tab.addClass(tabHiddenClass);
-					}
+    function navHeight(){
+        var post = $('.add_advert .steps li');
+        if(post.length>0){
 
-					// event handler
-					link.bind(options.event, function(e){
-						if(link != prevActiveLink && !animating) {
-							switchTab(prevActiveLink, link);
-							prevActiveLink = link;
-						}
-					});
-					if(options.attrib === 'href') {
-						link.bind('click', function(e){
-							e.preventDefault();
-						});
-					}
-				});
+            function change(){
 
-				// tab switch function
-				function switchTab(oldLink, newLink) {
-					animating = true;
-					var oldTab = oldLink.data('ctab');
-					var newTab = newLink.data('ctab');
-					prevActiveLink = newLink;
-					currentTab = newTab;
+                var posts = $('.steps li').map(function () {
+                        return $(this).height();
+                    }).get(),
+                    maxHeight = Math.max.apply(null, posts);
+                post.height(maxHeight);
+            }
 
-					// refresh pagination links
-					(options.addToParent ? tabLinksParents : tabLinks).removeClass(options.activeClass);
-					(options.addToParent ? newLink.data('cparent') : newLink).addClass(options.activeClass);
+            change();
 
-					// hide old tab
-					resizeHolder(oldTab, true);
-					contentTabsEffect[options.effect].hide({
-						speed: options.animSpeed,
-						tab:oldTab,
-						complete: function() {
-							// show current tab
-							resizeHolder(newTab.removeClass(tabHiddenClass).width(''));
-							contentTabsEffect[options.effect].show({
-								speed: options.animSpeed,
-								tab:newTab,
-								complete: function() {
-									if(!oldTab.is(newTab)) {
-										oldTab.width(oldTab.width()).addClass(tabHiddenClass);
-									}
-									animating = false;
-									resizeHolder(newTab, false);
-									autoRotate();
-								}
-							});
-						}
-					});
-				}
+            $(window).on('resize', function(){
+                change();
+            })
+        }
+    }
 
-				// holder auto height
-				function resizeHolder(block, state) {
-					var curBlock = block && block.length ? block : currentTab;
-					if(options.autoHeight && curBlock) {
-						tabHolder.stop();
-						if(state === false) {
-							tabHolder.css({height:''});
-						} else {
-							var origStyles = curBlock.attr('style');
-							curBlock.show().css({width:curBlock.width()});
-							var tabHeight = curBlock.outerHeight(true);
-							if(!origStyles) curBlock.removeAttr('style'); else curBlock.attr('style', origStyles);
-							if(state === true) {
-								tabHolder.css({height: tabHeight});
-							} else {
-								tabHolder.animate({height: tabHeight}, {duration: options.animSpeed});
-							}
-						}
-					}
-				}
-				if(options.autoHeight) {
-					$(window).bind('resize orientationchange', function(){
-						tabs.not(currentTab).removeClass(tabHiddenClass).show().each(function(){
-							var tab = jQuery(this), tabWidth = tab.css({width:''}).width();
-							if(tabWidth) {
-								tab.width(tabWidth);
-							}
-						}).hide().addClass(tabHiddenClass);
+    function login(){
+        var popup = $('.popup_form');
+        var btn = $('.btn-login');
+        var activeClass = 'active';
+        var doc = $(document);
 
-						resizeHolder(currentTab, false);
-					});
-				}
+        btn.on('click', function(e){
+            e.stopPropagation();
+            if(popup.hasClass(activeClass)){
+                popup.removeClass(activeClass);
+            }else{
+                popup.addClass(activeClass);
+                doc.on('click', clickOutside);
+            }
+        });
 
-				// autorotation handling
-				var rotationTimer;
-				function nextTab() {
-					var activeItem = (options.addToParent ? tabLinksParents : tabLinks).filter('.' + options.activeClass);
-					var activeIndex = (options.addToParent ? tabLinksParents : tabLinks).index(activeItem);
-					var newLink = tabLinks.eq(activeIndex < tabLinks.length - 1 ? activeIndex + 1 : 0);
-					prevActiveLink = tabLinks.eq(activeIndex);
-					switchTab(prevActiveLink, newLink);
-				}
-				function autoRotate() {
-					if(options.autoRotate && tabLinks.length > 1) {
-						clearTimeout(rotationTimer);
-						rotationTimer = setTimeout(function() {
-							if(!animating) {
-								nextTab();
-							} else {
-								autoRotate();
-							}
-						}, options.switchTime);
-					}
-				}
-				autoRotate();
-			});
-		};
+        function clickOutside(e){
+            var target = $(e.target);
+            if(!target.is(popup) && !target.parents('.' + activeClass).is(popup)){
+                popup.removeClass(activeClass);
+                doc.off('click', clickOutside);
+            }
+        }
 
-		// add stylesheet for tabs on DOMReady
-		var tabHiddenClass = 'js-tab-hidden';
-		$(function() {
-			var tabStyleSheet = $('<style type="text/css">')[0];
-			var tabStyleRule = '.'+tabHiddenClass;
-			tabStyleRule += '{position:absolute !important;left:-9999px !important;top:-9999px !important;display:block !important}';
-			if (tabStyleSheet.styleSheet) {
-				tabStyleSheet.styleSheet.cssText = tabStyleRule;
-			} else {
-				tabStyleSheet.appendChild(document.createTextNode(tabStyleRule));
-			}
-			$('head').append(tabStyleSheet);
-		});
 
-		// tab switch effects
-		var contentTabsEffect = {
-			none: {
-				show: function(o) {
-					o.tab.css({display:'block'});
-					if(o.complete) o.complete();
-				},
-				hide: function(o) {
-					o.tab.css({display:'none'});
-					if(o.complete) o.complete();
-				}
-			},
-			fade: {
-				show: function(o) {
-					if(o.fast) o.speed = 1;
-					o.tab.fadeIn(o.speed);
-					if(o.complete) setTimeout(o.complete, o.speed);
-				},
-				hide: function(o) {
-					if(o.fast) o.speed = 1;
-					o.tab.fadeOut(o.speed);
-					if(o.complete) setTimeout(o.complete, o.speed);
-				}
-			},
-			slide: {
-				show: function(o) {
-					var tabHeight = o.tab.show().css({width:o.tab.width()}).outerHeight(true);
-					var tmpWrap = $('<div class="effect-div">').insertBefore(o.tab).append(o.tab);
-					tmpWrap.css({width:'100%', overflow:'hidden', position:'relative'}); o.tab.css({marginTop:-tabHeight,display:'block'});
-					if(o.fast) o.speed = 1;
-					o.tab.animate({marginTop: 0}, {duration: o.speed, complete: function(){
-						o.tab.css({marginTop: '', width: ''}).insertBefore(tmpWrap);
-						tmpWrap.remove();
-						if(o.complete) o.complete();
-					}});
-				},
-				hide: function(o) {
-					var tabHeight = o.tab.show().css({width:o.tab.width()}).outerHeight(true);
-					var tmpWrap = $('<div class="effect-div">').insertBefore(o.tab).append(o.tab);
-					tmpWrap.css({width:'100%', overflow:'hidden', position:'relative'});
 
-					if(o.fast) o.speed = 1;
-					o.tab.animate({marginTop: -tabHeight}, {duration: o.speed, complete: function(){
-						o.tab.css({display:'none', marginTop:'', width:''}).insertBefore(tmpWrap);
-						tmpWrap.remove();
-						if(o.complete) o.complete();
-					}});
-				}
-			}
-		};
-	}(jQuery));
+        /*var item = $('.login-holder'),
+            form = $('.popup_form'),
+            activeclass = "active";
 
+        item.find('.btn-login').on('click', function(){
+            if(form.hasClass(activeclass)){
+                form.removeClass(activeclass);
+            }else{
+                form.addClass(activeclass);
+                setTimeout(function(){
+                    clickOnDocument
+                }, 13);
+            }
+        });
+        function clickOnDocument(e){
+            var target = $(e.target);
+            if(!target.is(form) && !target.parents(item).length){
+                form.addClass(activeclass);
+                $(document).off('click', clickOnDocument);
+            }
+        }*/
+    }
+
+    function telShow(){
+        var item = $('.article_bottom'),
+            opener = item.find('.links'),
+            activeclass = "active";
+        if( typeof(item) !== 'undefined'){
+            opener.on('click', function(e){
+                e.preventDefault();
+                var tel = $(this).parent().find('.tel');
+                tel.hasClass(activeclass) ? tel.removeClass(activeclass) : tel.addClass(activeclass);
+            })
+        }
+    }
+
+    function ui_slider(){
+        ;(function(){
+            var maxPrice = ($('input.maxPrice').length > 0) ? $('input.maxPrice').val() : 10000;
+            var pmin = ($('#input-number1').length > 0) ? $('#input-number1').val() : 0;
+            var pmax = ($('#input-number2').length > 0) && $('#input-number2').val() > 0 ? $('#input-number2').val() : maxPrice;
+            ;$('.sample-rate').noUiSlider({
+                range: [0,maxPrice],
+                start: [pmin,pmax],
+                handles: 2,
+                connect: true,
+                step: 1,
+                serialization: {
+                    to: [ [$('#input-number1'), handler1], [$('#input-number2'), handler2] ]
+                    ,resolution: 1
+                },
+            });
+//            $('.sample-rate .noUi-handle').each(function(ind){
+//                var item = this.appendChild(document.createElement('span'));
+//                item.id = 'helper'+ ind;
+//            });
+            function handler1(val){
+                if(this.data('data-helper1')){
+                    this.data('data-helper1').html(val);
+                }else{
+                    var item = $('<span id="helper1"></span>').appendTo(this.find('.noUi-handle-lower'));
+                    item.html(val);
+                    this.data('data-helper1', item);
+                }
+                $('#from').val(val);
+            }
+            function handler2(val){
+                if(this.data('data-helper2')){
+                    this.data('data-helper2').html(val);
+                }else{
+                    var item = $('<span id="helper2"></span>').appendTo(this.find('.noUi-handle-upper'));
+                    item.html(val);
+                    this.data('data-helper2', item);
+                }
+                $('#to').val(val);
+            }
+        })();
+
+
+
+    }
+
+	/*This area from declaration plugins*/
 })(jQuery);

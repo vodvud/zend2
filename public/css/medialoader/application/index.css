@@ -5,3 +5,6 @@
  *  /index/*
  */
 
+.noUi-handle span {
+    display: none;
+}

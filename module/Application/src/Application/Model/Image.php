@@ -22,7 +22,7 @@ class Image extends \Application\Base\Model
         if($url !== null && !empty($url)){
             // image path
             $image_path = PUBLIC_PATH.$url;
-            $watermark_path = PUBLIC_PATH.'/img/'.self::WATERMARK_IMG;
+            $watermark_path = PUBLIC_PATH.'/images/'.self::WATERMARK_IMG;
 
             if(is_file($image_path) && is_file($watermark_path)){            
                 // image time

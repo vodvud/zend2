@@ -5,15 +5,17 @@
         <h3>Админ-панель</h3>    
       </div>
       <div class="control-group">
-        <label class="control-label" for="inputUser">Логин</label>
+        <label class="control-label" for="inputUser">Логин *</label>
         <div class="controls">
           <input type="text" id="inputUser" name="username" placeholder="Введите логин" value="" maxlength="100">
+          <span>* Проверьте правильность ввода</span>
         </div>
       </div>
       <div class="control-group">
-        <label class="control-label" for="inputPassword">Пароль</label>
+        <label class="control-label" for="inputPassword">Пароль *</label>
         <div class="controls">
           <input type="password" id="inputPassword" name="password" placeholder="Введите пароль" value="" maxlength="100">
+          <span>* Проверьте правильность ввода</span>
         </div>
       </div>
       <div class="control-group">
@@ -21,7 +23,9 @@
           <button type="submit" class="btn">Вход</button>
         </div>
       </div>
-      <input type="hidden" name="login-form" value="1">
+      <input type="hidden" name="login-form" value="0">
+      <div id="error-box"></div>
+      <input type="hidden" name="validator" value="<?php echo($this->easyUrl(array('action' => 'validator'))); ?>">
     </form>
   </div>
 </div>

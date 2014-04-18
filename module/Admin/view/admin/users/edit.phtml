@@ -27,12 +27,20 @@
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label">Звезд</label>
+        <label class="control-label">Счет</label>
         <div class="controls">            
-            <input class="span1" type="text" name="star" placeholder="Цифра…" maxlength="4" value="<?php echo((int)$getEdit['star']); ?>">
+            <input class="span1 num-only" type="text" name="balance" placeholder="Цифра…" maxlength="20" value="<?php echo((int)$getEdit['balance']); ?>">
+            <p><small>Максимальная длина 9 символов</small></p>
         </div>
     </div>
     <?php echo($this->partial('admin-partials/user-phone-box.phtml')); ?>
+    <div class="control-group">  
+        <hr>
+        <label class="checkbox">
+            <input type="checkbox" name="status" value="y"<?php echo(($getEdit['status'] == 'y') ? ' checked="checked"' : ''); ?>> Статус "Активный"
+        </label>
+        <hr>
+    </div>
     <div class="form-actions">
       <button type="submit" class="btn btn-primary">Сохранить</button>
       <a class="btn" href="<?php echo($this->easyUrl(array('action' => 'index'))); ?>">Отменить</a>

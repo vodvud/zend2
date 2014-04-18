@@ -13,11 +13,13 @@ use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\ModuleManager;
 use Base\Mvc\MediaLoader;
+use Base\Mvc\SessionHelper;
 use Base\Url\EasyUrl;
 use Base\Storage;
 use Base\Url\RouteNamesLoader;
 use Base\Url\RouteNamesHelper;
 use Base\Text\Truncate;
+use Base\Filter\ImageHelper;
 
 class Module
 {
@@ -78,6 +80,12 @@ class Module
                 },
                 'truncate' => function() {                   
                     return new Truncate();
+                },
+                'session' => function() {                   
+                    return new SessionHelper();
+                },
+                'imageUrl' => function() {                   
+                    return new ImageHelper();
                 },
             ),
         );

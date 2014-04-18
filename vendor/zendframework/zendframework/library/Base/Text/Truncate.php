@@ -25,7 +25,7 @@ class Truncate extends AbstractHelper {
                 return $text;
             }
             
-            preg_match_all('/(\<.+?\>)?([^\<\>]*)/s', $text, $lines, PREG_SET_ORDER);
+            preg_match_all('/(\<.+?\>)?([^\<\>]*)/su', $text, $lines, PREG_SET_ORDER);
     
             $total_length = strlen($ending);
             $open_tags = array();
@@ -33,22 +33,22 @@ class Truncate extends AbstractHelper {
             
             foreach ($lines as $line_matchings) {
                 if (!empty($line_matchings[1])) {
-                    if (preg_match('/^\<(s*.+?\/s*|s*(img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param)(s.+?)?)\>$/is', $line_matchings[1])) {
-                    } else if (preg_match('/^\<s*\/([^s]+?)s*\>$/s', $line_matchings[1], $tag_matchings)) {
+                    if (preg_match('/^\<(s*.+?\/s*|s*(img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param)(s.+?)?)\>$/isu', $line_matchings[1])) {
+                    } else if (preg_match('/^\<s*\/([^s]+?)s*\>$/su', $line_matchings[1], $tag_matchings)) {
                         $pos = array_search($tag_matchings[1], $open_tags);
                         if ($pos !== false) {
                             unset($open_tags[$pos]);
                         }
-                    } else if (preg_match('/^\<s*([^s>!]+).*?\>$/s', $line_matchings[1], $tag_matchings)) {
+                    } else if (preg_match('/^\<s*([^s>!]+).*?\>$/su', $line_matchings[1], $tag_matchings)) {
                         array_unshift($open_tags, strtolower($tag_matchings[1]));
                     }
                     $truncate .= $line_matchings[1];
                 }
-                $content_length = strlen(preg_replace('/\&[0-9a-z]{2,8}\;|\&\#[0-9]{1,7}\;|\&\#\x[0-9a-f]{1,6}\;/i', ' ', $line_matchings[2]));
+                $content_length = strlen(preg_replace('/\&[0-9a-z]{2,8}\;|\&\#[0-9]{1,7}\;|\&\#\x[0-9a-f]{1,6}\;/iu', ' ', $line_matchings[2]));
                 if ($total_length+$content_length > $length) {
                     $left = $length - $total_length;
                     $entities_length = 0;
-                    if (preg_match_all('/\&[0-9a-z]{2,8}\;|\&\#[0-9]{1,7}\;|\&\#\x[0-9a-f]{1,6}\;/i', $line_matchings[2], $entities, PREG_OFFSET_CAPTURE)) {
+                    if (preg_match_all('/\&[0-9a-z]{2,8}\;|\&\#[0-9]{1,7}\;|\&\#\x[0-9a-f]{1,6}\;/iu', $line_matchings[2], $entities, PREG_OFFSET_CAPTURE)) {
                         foreach ($entities[0] as $entity) {
                             if ($entity[1]+1-$entities_length <= $left) {
                                 $left--;

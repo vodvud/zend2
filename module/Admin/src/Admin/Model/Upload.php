@@ -1,39 +1,46 @@
 <?php
 namespace Admin\Model;
 
-use \Base\Filter\ImageResize;
+use Base\Filter;
 
 class Upload extends \Application\Base\Model
 { 
-    private $imgType = array('gif', 'png', 'jpg', 'jpeg');
+    private $imgType = array('png', 'jpg', 'jpeg');
     
     /**
      * Upload file
      * @param mixed $file
      * @param null|array $type
-     * @param null|string $cat
      * @param array $params
+     * @param bool $crop
      * @return null|string
      */
-    public function save($file = null, $type = null, $cat = null, $params = array('width' => 1024, 'height' => 768)){
+    public function save($file = null, $type = null, $params = array('width' => 1280, 'height' => 800), $crop = false){
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
         
         $ret = null;
         
         if($file !== null && isset($file['error']) && $file['error'] == 0){
-            $file_name = strtolower($file['name']);
+            $image = new Filter\ImageClass();
+            
+            $image_ext = strtolower($file['name']);
+            $image_ext = explode('.', $image_ext);
+            $image_ext = end($image_ext);
+            
+            $file_name = $image->generateImageName($image_ext, $this->dir());
             $file_type = explode('/', $file['type']);
             $file_type = end($file_type);
             
             if((is_array($type) && in_array($file_type, $type)) || $type === null){
-                $file_name = $this->upload($file_name, $file['tmp_name'], $cat);
+                $upload = $this->upload($file_name, $file['tmp_name']);
 
-                if($file_name !== null){
+                if($upload === true){
                     if(in_array($file_type, $this->imgType)){
+                        $params['method'] = ($crop === true) ? Filter\ImageResize::METHOD_SCALE_MIN : Filter\ImageResize::METHOD_SCALE_MAX;
                         $this->resize($file_name, $params);
                     }
                     
-                    $ret = '/upload/'.$file_name;
+                    $ret = $file_name;
                 }
             }
         }
@@ -44,34 +51,15 @@ class Upload extends \Application\Base\Model
     /**
      * Upload file
      * @param string $file_name
-     * @param mixed $tmp
-     * @param null|string $cat
-     * @return null|string
+     * @param string $tmp
+     * @return boolean
      */
-    private function upload($file_name, $tmp, $cat = null){
-        $ret = null;
+    private function upload($file_name, $tmp){
+        $ret = false;
             
-        if($tmp && $file_name){
-            $dir = ($cat !== null) ? $cat.'/' : '';            
-            $exp = explode('.', $file_name);
-            $type = end($exp);
-            unset($exp[count($exp)-1]);
-            $name = implode('.', $exp);
-            $sufix = '';
-            
-            if(!is_dir($this->dir().$dir)){
-                mkdir($this->dir().$dir, 0777, true);
-            }
-            
-            $i = 1;
-            while(is_file($this->dir().$dir.$name.$sufix.'.'.$type)){
-                $sufix = $i++;
-            }
-            
-            $file_name = $dir.$name.$sufix.'.'.$type;
-            
+        if(!empty($file_name) && !empty($tmp)){            
             if(move_uploaded_file($tmp, $this->dir().$file_name)){
-                $ret = $file_name;
+                $ret = true;
             }
         }
         
@@ -84,7 +72,7 @@ class Upload extends \Application\Base\Model
      * @param array $params
      */
     private function resize($file_name, $params){
-        $resize = new ImageResize($params);
+        $resize = new Filter\ImageResize($params);
         $resize->filter($this->dir().$file_name);
     }
     
@@ -93,7 +81,7 @@ class Upload extends \Application\Base\Model
      * @return string
      */
     private function dir(){
-        return PUBLIC_PATH.'/upload/';
+        return BASE_PATH.DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR.'upload'.DIRECTORY_SEPARATOR;
     }
     
     /**
@@ -104,8 +92,8 @@ class Upload extends \Application\Base\Model
     public function unlink($url){
         $ret = false;
         
-        if(is_file(PUBLIC_PATH.$url)){
-            @unlink(PUBLIC_PATH.$url);
+        if(is_file($this->dir().$url)){
+            @unlink($this->dir().$url);
             $ret = true;
         } 
         

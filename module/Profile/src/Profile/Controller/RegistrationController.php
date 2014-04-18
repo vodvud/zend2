@@ -2,63 +2,71 @@
 namespace Profile\Controller;
 
 class RegistrationController extends \Profile\Base\Controller
-{    
+{
     public function indexAction(){
         $this->log(__CLASS__.'\\'.__FUNCTION__); 
         
-        if(isset($this->session->auth['id'])){
+        
+        if($this->session('profile')->authId !== null){
             return $this->redirect()
                          ->toUrl(
                              $this->easyUrl(array())
                          );
         }
-        
         if($this->p_int('registration-form') === 1){
             $params = array(
                 'username' => $this->p_string('username'),
                 'password' => $this->p_string('password'),
-                'retry_password' => $this->p_string('retry_password')
+                'retry_password' => $this->p_string('retry_password'),
+                'activation_url' => $this->easyUrl(array('action' => 'activation', 'key' => '_SET_KEY_')) 
             );
-            
-            $user = null;
+
             $check = $this->check($params);
             if($check['status'] == true){
-                $user = $this->load('Registration', 'profile')->authUser($params);
+                $this->load('Registration', 'profile')->authUser($params);
             }
         
-            return $this->setAuth($user);
-        }
-        
-        return $this->redirect()
-                     ->toUrl(
-                         $this->easyUrl(array('controller' => 'error', 'action' => 'registration'))
-                     );
-    }
-    
-    /**
-     * Set login
-     */
-    private function setAuth($user = null){
-        $this->log(__CLASS__ . '\\' . __FUNCTION__);
-        
-        if(isset($user['id']) && isset($user['username'])){            
-            $this->session->auth = array(
-                'id' => (int)$user['id'],
-                'username' => (string)$user['username']
-            );
-            
             return $this->redirect()
                          ->toUrl(
-                             $this->easyUrl(array('controller' => 'contacts'))
-                         );
-        }else{
-            return $this->redirect()
-                         ->toUrl(
-                             $this->easyUrl(array('controller' => 'error', 'action' => 'registration'))
+                             $this->easyUrl(array('action' => 'confirm'))
                          );
         }
+        
+        return $this->view();
+        
     }
-    
+
+    public function confirmAction(){
+        $this->log(__CLASS__.'\\'.__FUNCTION__);
+
+        $ret = array();
+
+        return $this->view($ret);
+    }
+
+    public function activationAction(){
+        $this->log(__CLASS__.'\\'.__FUNCTION__);
+
+        $key = $this->p_string('key');
+        if (!empty($key)) {
+            $user = $this->load('Registration', 'profile')->activationUser($key);
+            if ($user != null){
+                $this->setUserId($user['id']);
+                $this->setUserNаme($user['username']);
+                
+                return $this->redirect()
+                             ->toUrl(
+                                 $this->easyUrl(array('controller' => 'settings'))
+                             );
+            }
+        } else {
+           return $this->redirect()
+                        ->toUrl(
+                            $this->easyUrl(array('controller' => 'error', 'action' => 'registration'))
+                        );
+        }
+    }
+
     public function validatorAction(){
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
         $this->isAjax();
@@ -66,15 +74,15 @@ class RegistrationController extends \Profile\Base\Controller
         $params = array(
             'username' => $this->p_string('username'),
             'password' => $this->p_string('password'),
-            'retry_password' => $this->p_string('retry_password')
+            'retry_password' => $this->p_string('retry_password'),
+            'type' => $this->p_int('type')
         );
         
         $ret = $this->check($params);
         
         return $this->json($ret);
     }
-    
-    
+
     /**
      * @param array $params
      * @return array
@@ -98,7 +106,7 @@ class RegistrationController extends \Profile\Base\Controller
                 }
             }
         }
-        
+
         $validItem = $this->load('Validator')->validIdentical($params['password'], $params['retry_password']);
         if($validItem == false){
             $error['retry_password'] = $validItem;
@@ -109,6 +117,10 @@ class RegistrationController extends \Profile\Base\Controller
             }
         }
         
+        if ($params['type'] === 0) {
+            $error['type'] = false;
+        }
+
         $ret = array(
             'status' => (sizeof($error) > 0 ? false : true),
             'error' => $error

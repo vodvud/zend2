@@ -28,7 +28,7 @@ return array(
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'get_http_request_string' => '[a-zA-Z0-9][a-zA-Z0-9_\/-\\\.]*',
+                                'get_http_request_string' => '[a-zA-Z0-9][a-zA-Z0-9_\/\-\\\.]*',
                             ),
                             'defaults' => array(
                                 'action' => 'index',

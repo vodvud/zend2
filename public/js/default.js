@@ -1,28 +1,28 @@
 /**
  * @description Alternative replacement code:
  * @description $('body').off(events, selector).on(events, selector, callback);
- * 
+ *
  * @param string events
  * @param string selector
  * @param mixed callback
  */
 function bodyOffOn(events, selector, callback){
-    $('body').off(events, selector).on(events, selector, callback); 
+    $('body').off(events, selector).on(events, selector, callback);
 }
 
 /**
  * @description Close popup and reload page
- * 
+ *
  * @param string selector
  */
 function pageReload(selector){
     $(selector).remove();
-    window.location.reload();  
+    window.location.reload();
 }
 
 /**
  * @description Close popup
- * 
+ *
  * @param string selector
  */
 function closePopupBox(selector){
@@ -30,7 +30,6 @@ function closePopupBox(selector){
     $(selector).parents('.pop-up-tmp').remove();
     return false;
 }
-
 
 /**
  * @description Scrolling Page
@@ -58,32 +57,32 @@ function scrollingPage(selector, marginTop){
 
 /**
  * @description Set cursor wait
- * 
+ *
  * @param string|object selector
  */
 function setCursorWait(selector){
     $('body').css('cursor', 'wait');
-    $(selector).css('cursor', 'wait'); 
+    $(selector).css('cursor', 'wait');
 }
 
 /**
  * @description Set cursor default
- * 
+ *
  * @param string|object selector
  */
 function setCursorDefault(selector){
     $('body').css('cursor', 'default');
-    $(selector).css('cursor', 'default'); 
+    $(selector).css('cursor', 'default');
 }
 
 /**
  * @description Set cursor Auto
- * 
+ *
  * @param string|object selector
  */
 function setCursorAuto(selector){
     $('body').css('cursor', 'auto');
-    $(selector).css('cursor', 'auto'); 
+    $(selector).css('cursor', 'auto');
 }
 
 /**
@@ -101,6 +100,17 @@ function checkboxChecked(elem, status){
     }
 }
 
+// card aside popup alignment
+function initAdvertPopupAlign() {
+    var selector = $(".cards .menu").find('.submnu');
+    selector.each(function () {
+        var offset = $(this).height()/2;
+        $(this).css({
+            'top': -offset + 15 + "px"
+        });
+    });
+}
+
 /**
  * Get outerHTML
  */
@@ -108,27 +118,40 @@ jQuery.fn.outerHTML = function(s) {
     return s
         ? this.before(s).remove()
         : jQuery("<p>").append(this.eq(0).clone()).html();
-};
+}; 
 
 /**
- * Strip HTML tags
- * @param string selector
- * @param string allow Allow tags
+ * Remove error class
  */
-function stripTags(selector, allow){
-    if($(selector).length > 0){
-        setTimeout(function(){
-          if(typeof(allow) === 'undefined' || allow === ''){
-              $(selector).html($(selector).text());
-          }else{
-              $(selector).find('*:not('+allow+')').contents().unwrap();
-              $(selector).find('*:not('+allow+')').remove();
+function resetErrorStyle() {
+    bodyOffOn('keypress change', 'form [name].error, form div.error [name]', function(){
+        if($(this).hasClass('error')){
+            $(this).removeClass('error');
+        }else{
+            $(this).closest('div.error').removeClass('error');
+        }
+    });
+}
 
-              $(selector).html(
-                    $(selector).html().replace(/(\n){2,}/g, '<br>')
-                                      .replace(/\s{2,}/g, ' ')
-              );
-          }
-        }, 50);
-    }
+/**
+ * only number
+ */
+function numbersOnly() {
+    bodyOffOn('keypress', 'form [name].num-only', function(evt){
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        
+        if (charCode == 46 || charCode == 44 || charCode == 8 || (charCode > 47 && charCode < 58)){
+            return true;
+        }else{
+            return false;
+        }
+    });
+}
+
+function submitButton(){
+    bodyOffOn('click', '.submitIt', function(e){
+        e.preventDefault();
+        var form = $(this).closest('form');
+        $(form).submit();
+    });
 }

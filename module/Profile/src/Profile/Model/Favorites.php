@@ -5,27 +5,23 @@ class Favorites extends \Application\Base\Model
 {
     /**
      * Add
-     * @param string $cat
-     * @param int $car
+     * @param int $advert
      * @param int $user_id
      * @return bool
      */
 
-    public function add($cat = null, $car = 0, $user_id = 0)
+    public function add($advert = 0, $user_id = 0)
     {
         $this->log(__CLASS__ . '\\' . __FUNCTION__);
 
         $ret = 0;
 
-        if ($cat !== null && $car > 0 && $user_id > 0) {
-            $catId = $this->load('VehiclesCat', 'admin')->getCatId($cat);
-            
-            if ($catId > 0) {
+        if ($advert > 0 && $user_id > 0) {
+
+            if ($advert > 0) {
                 $params = array(
                     'user_id' => $user_id,
-                    'car_id' => $car,
-                    'cat_id' => $catId,
-
+                    'advert_id' => $advert
                 );
 
                 $insert = $this->insert(self::TABLE_FAVORITES)

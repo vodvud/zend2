@@ -29,8 +29,7 @@ function admin_pages_formValidator(){
 
             var url = $(form).find('input[name="validator"]').val();
             var vals = {
-                content1: $(form).find('textarea[name="content1"]').val(),
-                content2: $(form).find('textarea[name="content2"]').val()
+                content: $(form).find('textarea[name="content"]').val()
             };
 
             $.post(url, vals, function(data){

@@ -39,7 +39,7 @@ function admin_users_editForm(){
                 username: $(form).find('input[name="username"]').val(),
                 password: $(form).find('input[name="password"]').val(),
                 retry_password: $(form).find('input[name="retry_password"]').val(),
-                star: $(form).find('input[name="star"]').val(),
+                balance: $(form).find('input[name="balance"]').val(),
                 phoneArray: phoneArray
             };
 

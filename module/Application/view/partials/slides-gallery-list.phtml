@@ -1,47 +1,27 @@
-<?php if((isset($getGallery) && is_array($getGallery)) || !empty($carOne['photo'])){ ?>
+<?php if ((isset($getGallery) && is_array($getGallery))) { ?>
 <div class="item-gallery">
     <div class="left-bar">
         <a class="btn-prev">previous</a>
         <div class="pager-holder">
             <ul class="pager">
-            <?php if(!empty($carOne['photo'])){ ?>
-                <li>
-                    <a><img class="gal-img" src="<?php echo($this->easyUrl(array('controller' => 'image', 'action' => $this->routeNames('controller'), 'id' => $carOne['id'], 'w' => 76, 'h' => 50))); ?>" alt=""></a>
-                </li>                
-            <?php } ?>
-            <?php if(isset($getGallery) && is_array($getGallery)){ ?>   
-                <?php foreach($getGallery as $item){ ?>
-                    <?php if(isset($item['slider']['small'])){ ?>
+                <?php foreach ($getGallery as $item) { ?>
                     <li>
-                        <a><img class="gal-img" src="<?php echo($item['slider']['small']); ?>" alt=""></a>
+                        <a><img src="<?php echo($item['slider']['small_gallery']); ?>" alt="slide"/></a>
                     </li>
-                    <?php } ?>
                 <?php } ?>
-            <?php } ?>                
+
             </ul>
         </div>
         <a class="btn-next">next</a>
     </div>
     <div class="holder">
         <ul>
-        <?php if(!empty($carOne['photo'])){ ?>
-            <li>
-                <a href="<?php echo($this->easyUrl(array('controller' => 'image', 'action' => $this->routeNames('controller'), 'id' => $carOne['id']))); ?>" data-lightbox="place-gallery">
-                    <img class="gal-img" src="<?php echo($this->easyUrl(array('controller' => 'image', 'action' => $this->routeNames('controller'), 'id' => $carOne['id'], 'w' => 424, 'h' => 364))); ?>" alt="">
-                </a>
-            </li>
-        <?php } ?>
-        <?php if(isset($getGallery) && is_array($getGallery)){ ?>
-            <?php foreach($getGallery as $item){ ?>
-                <?php if(isset($item['slider']['medium'])){ ?>
+            <?php foreach ($getGallery as $item) { ?>
                 <li>
-                    <a href="<?php echo($item['url']); ?>" data-lightbox="place-gallery">
-                        <img class="gal-img" src="<?php echo($item['slider']['medium']); ?>" alt="">
-                    </a>
+                    <a href="<?php echo ($item['url']); ?>" data-lightbox="place-gallery">
+                        <img src="<?php echo($item['slider']['medium']); ?>" alt="slide"/></a>
                 </li>
-                <?php } ?>
             <?php } ?>
-        <?php } ?>
         </ul>
     </div>
 </div>

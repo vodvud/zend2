@@ -26,125 +26,7 @@ use Base\Func;
 class Model
 {
     // Include default methods  (as of PHP 5.4.0)
-    //use Func\TraitDefault;
-    
-//############################################################################//
-//################ FIX NOT TRAIT (PHP 5.3.x and old versions) ################//
-//############################################################################//
-    
-    /**
-     * save log
-     * @param str $str __CLASS__.'\\'.__FUNCTION__
-     */
-    public final function log($str){
-        return new \Base\Log();
-    }
-    
-    /**
-     * get storage
-     * @return \Base\Storage
-     */
-    public final function storage(){
-        return new \Base\Storage();
-    }
-     
-    /**
-     * Returns site's base path.
-     * 
-     * @return string
-     */
-    public final function basePath(){
-        return ($this->storage()->basePath !== null) ? $this->storage()->basePath : '';
-    }
-         
-    /**
-     * Returns site email.
-     * @return string
-     */
-    public final function getSiteEmail(){        
-        return isset($this->storage()->siteConfig['email']) ? $this->storage()->siteConfig['email'] : 'info@'.$_SERVER['HTTP_HOST'];
-    }
-    
-    /**
-     * Returns site name.
-     * @return string
-     */
-    public final function getSiteName(){
-        return isset($this->storage()->siteConfig['name']) ? $this->storage()->siteConfig['name'] : 'Site Name';
-    } 
-    
-    /**
-     * Load models
-     * @param str $model
-     * @param str $module
-     * @return object
-     * @throws \Zend\Mvc\Exception\InvalidArgumentException
-     */
-    public final function load($model = null, $module = 'application') {
-        return \Base\Mvc\ModelsLoader::load($model, $module);
-    }
-    
-    /**
-     * Debuger
-     * @param mixed $obj
-     * @param boolean $isDie
-     */
-    public final function debug($obj, $isDie = true){        
-        \Zend\Debug\Debug::dump($obj);
-        
-        if($isDie === true){
-            die();
-        }
-    }
-    
-    /**
-     * Json Decode
-     * @param json $value
-     * @param boolean $toArray
-     * @return array|mixed
-     */
-    public final function jsonDecode($value, $toArray = true){
-        if($this->isJson($value) === true){            
-            $type = ($toArray === true) ? \Zend\Json\Json::TYPE_ARRAY : \Zend\Json\Json::TYPE_OBJECT;
-            return \Zend\Json\Json::decode($value, $type);
-        }else{
-           return $value; 
-        }
-    }
-    
-    /**
-     * Json Encode
-     * @param array $value
-     * @return json|mixed
-     */
-    public final function jsonEncode($value){
-        if(is_array($value)){
-            return \Zend\Json\Json::encode($value);
-        }else{
-            return $value;
-        }
-    }
-    
-    
-    /**
-     * Check json string
-     * @param json $json
-     * @return boolean
-     */
-    public final function isJson($json){
-        $ret = false;
-        
-        @json_decode($json);
-        if(json_last_error() === JSON_ERROR_NONE){
-            $ret = true;
-        }
-        
-        return $ret;
-    } 
-    
-//############################################################################//
-//########################## FIX NOT TRAIT (end) #############################//
-//############################################################################//
+    use Func\TraitDefault;
     
     // SQL constant
     const SQL_ALL = CustomSelect::QUANTIFIER_ALL;
@@ -160,6 +42,9 @@ class Model
     const SQL_WHERE_OR = PredicateSet::OP_OR;
     const SQL_COL_IDENTIFIER = PredicateSet::TYPE_IDENTIFIER;
     const SQL_COL_VALUE = PredicateSet::TYPE_VALUE;
+    
+    const MYSQL_DATETIME_FORMAT = 'Y-m-d H:i:s';
+    const MYSQL_DATE_FORMAT = 'Y-m-d';
 
     private static $_adapter = null;
     
@@ -358,7 +243,7 @@ class Model
      * @return int 
      */
     public final function insertId() {
-        return $this->adapter()->getDriver()->getLastGeneratedValue();
+        return (int)($this->adapter()->getDriver()->getLastGeneratedValue());
     }
     
     /**
@@ -419,4 +304,58 @@ class Model
         $translit = new Translit();
         return $translit($string, $separator, $lowercase);
     } 
+    
+    
+    /**
+     * cUrl
+     * @param string $url
+     * @param array $options
+     * @param \Zend\Http\Request $method
+     * @param string $postParams
+     * @return mixed
+     */
+    public final function curl($url = null, $options = null, $method = \Zend\Http\Request::METHOD_GET, $postParams = null){
+        $ret = null;
+        
+        if($url !== null){            
+            $adapter = new \Zend\Http\Client\Adapter\Curl();
+            $client = new \Zend\Http\Client();
+
+            $client->setAdapter($adapter);
+
+            if(is_array($options)){
+                $client->setOptions(array('curloptions' => $options));
+            }
+
+            $request = new \Zend\Http\Request();
+
+            $request->setUri($url);
+            $request->setMethod($method);
+
+            if($method === \Zend\Http\Request::METHOD_POST){
+                $request->setContent($postParams);
+            }
+
+            $response = $client->dispatch($request);
+
+            $ret = $response->getContent();
+        }
+        
+        return $ret;
+    }
+    
+    /**
+     * Render image from url
+     * @param string $url
+     * @param int $w
+     * @param int $h
+     * @param boolean $crop default false
+     * @param string $default_img
+     * @return string
+     */
+    public function imageUrl($url = null, $w = 0, $h = 0, $crop = false, $default_img = \Base\Filter\ImageClass::DEFAULT_IMG) {
+        $image = new \Base\Filter\ImageClass();
+        $crop = ($crop === true) ? 'y' : 'n';
+        return $image->get($url, $w, $h, $crop, $default_img);
+    }
 }
