@@ -3,9 +3,6 @@ namespace Base\Filter;
 
 class ImageClass 
 {
-    // Include default methods  (as of PHP 5.4.0)
-    use \Base\Func\TraitDefault;
-
     const WATERMARK_IMG = 'watermark.png';
     const DEFAULT_IMG = 'no_photo.png';
     const HSHIFT = 5;
@@ -23,8 +20,6 @@ class ImageClass
      * @return string
      */
     public function get($url = null, $w = 0, $h = 0, $crop = 'n', $default_img = self::DEFAULT_IMG){
-        $this->log(__CLASS__.'\\'.__FUNCTION__);
-        
         $ret = $this->getUrl(DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.$default_img);
         
         if($url !== null && !empty($url)){
@@ -100,9 +95,7 @@ class ImageClass
      * @return mixed
      * @throws \Exception
      */
-    private function render($image_path, $width, $height, $type, $watermark_path){
-        $this->log(__CLASS__.'\\'.__FUNCTION__);
-        
+    private function render($image_path, $width, $height, $type, $watermark_path){        
         // creating png image of watermark
         $watermark = imagecreatefrompng($watermark_path);   
 
@@ -164,8 +157,6 @@ class ImageClass
      * @throws \Exception
      */
     private function imageCreate($image_path, $type){
-        $this->log(__CLASS__.'\\'.__FUNCTION__);
-        
         if (!is_file($image_path) || !is_readable($image_path)) {
            throw new \Exception('Unable to open file');
            return false;
@@ -197,8 +188,6 @@ class ImageClass
      * @return null|string
      */
     public function generateImageName($imageExt = null, $dir = null){
-        $this->log(__CLASS__.'\\'.__FUNCTION__);
-        
         $ret = null;
         
         if ($imageExt !== null && $dir !== null) {
@@ -218,8 +207,6 @@ class ImageClass
      * @return null|string
      */
     private function generateDirsForImageName($image = null, $dir = null){
-        $this->log(__CLASS__.'\\'.__FUNCTION__);
-        
         $ret = null;
         
         if($image !== null && $dir !== null){
@@ -241,9 +228,7 @@ class ImageClass
      * Create directories for image
      * @param string $image
      */
-    private function createImageDirs($image = null){  
-        $this->log(__CLASS__.'\\'.__FUNCTION__);
-        
+    private function createImageDirs($image = null){          
         if($image !== null && !empty($image)){
             $dir = dirname($image);
             if(!empty($dir) && !file_exists($dir)){                
@@ -257,11 +242,10 @@ class ImageClass
      * @param string $image
      * @return string
      */
-    private function getUrl($image = null){
-        $this->log(__CLASS__ . '\\' . __FUNCTION__);
-        
+    private function getUrl($image = null){        
         if($image !== null){
-            $image = $this->basePath().$image;
+            $storage = new \Base\Storage();
+            $image = (($storage->basePath !== null) ? $storage->basePath : '').$image;
         }
         
         return $image;
